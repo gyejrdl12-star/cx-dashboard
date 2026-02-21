@@ -149,6 +149,30 @@
       </div>
     </section>
 
+    <!-- B-2. 태그 인사이트 -->
+    <section id="tag-insights" class="section">
+      <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-base">💡</span>
+          <h2 class="text-sm font-bold text-slate-100">태그 인사이트</h2>
+          <div class="flex gap-1 ml-4">
+            <button onclick="switchInsightTab('repeat')" id="insightTab-repeat" class="px-3 py-1 text-xs rounded border transition bg-teal-600 text-white border-teal-600">반복 문의</button>
+            <button onclick="switchInsightTab('surge')" id="insightTab-surge" class="px-3 py-1 text-xs rounded border transition bg-slate-900 text-slate-400 border-slate-700 hover:bg-slate-700">WoW 급증</button>
+          </div>
+        </div>
+        <!-- 반복 문의 탭 -->
+        <div id="insightPanel-repeat">
+          <p class="text-xs text-slate-500 mb-3">매주 반복적으로 들어오는 태그 — 구조적 문제(UX·정책·가이드 부족) 가능성</p>
+          <div id="repeatTagList" class="space-y-1.5"></div>
+        </div>
+        <!-- 급증 탭 -->
+        <div id="insightPanel-surge" class="hidden">
+          <p class="text-xs text-slate-500 mb-3">전주 대비 건수가 가장 많이 늘어난 태그 — 돌발 이슈 감지</p>
+          <div id="surgeTagList" class="space-y-1.5"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- D. 세그먼트 x 태그 크로스 분석 -->
     <section id="segment-tag-cross" class="section">
       <div class="flex items-center gap-2 mb-1">
@@ -429,6 +453,9 @@
       // C. Category top 10 tabs
       renderCategoryTabs(records, catEntries);
 
+      // B-2. Tag insights
+      renderTagInsights(records);
+
       // D. Segment charts
       renderSegmentCharts(records);
 
@@ -524,6 +551,150 @@
         },
         options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false }, datalabels: { display: true, anchor: 'end', align: 'right', color: '#e2e8f0', font: { size: 10, weight: 'bold' } } }, scales: { x: { beginAtZero: true, ticks: { font: { size: 10 } } }, y: { ticks: { font: { size: 10 } } } } }
       });
+    }
+
+    // === 태그 인사이트 ===
+    function switchInsightTab(tab) {
+      ['repeat', 'surge'].forEach(t => {
+        document.getElementById('insightPanel-' + t).classList.toggle('hidden', t !== tab);
+        const btn = document.getElementById('insightTab-' + t);
+        btn.className = t === tab
+          ? 'px-3 py-1 text-xs rounded border transition bg-teal-600 text-white border-teal-600'
+          : 'px-3 py-1 text-xs rounded border transition bg-slate-900 text-slate-400 border-slate-700 hover:bg-slate-700';
+      });
+    }
+
+    function getWeekKey(dateStr) {
+      const d = new Date(dateStr);
+      const jan1 = new Date(d.getFullYear(), 0, 1);
+      const week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+      return d.getFullYear() + '-W' + String(week).padStart(2, '0');
+    }
+
+    function renderTagInsights(records) {
+      // 주차별 세부 태그 집계
+      const weeklyDetail = {};
+      records.forEach(r => {
+        if (!r.date || !r.primaryTag) return;
+        const wk = getWeekKey(r.date);
+        if (!weeklyDetail[wk]) weeklyDetail[wk] = {};
+        weeklyDetail[wk][r.primaryTag] = (weeklyDetail[wk][r.primaryTag] || 0) + 1;
+      });
+      const weeks = Object.keys(weeklyDetail).sort();
+
+      // --- 반복 문의 ---
+      const allTags = new Set();
+      weeks.forEach(w => Object.keys(weeklyDetail[w]).forEach(t => allTags.add(t)));
+
+      const repeatTags = [];
+      allTags.forEach(tag => {
+        const appearedWeeks = weeks.filter(w => (weeklyDetail[w][tag] || 0) >= 3);
+        if (appearedWeeks.length >= 2) {
+          const total = weeks.reduce((s, w) => s + (weeklyDetail[w][tag] || 0), 0);
+          repeatTags.push({ tag, weekCount: appearedWeeks.length, total });
+        }
+      });
+      repeatTags.sort((a, b) => b.weekCount - a.weekCount || b.total - a.total);
+
+      const repeatList = document.getElementById('repeatTagList');
+      if (repeatTags.length === 0) {
+        repeatList.innerHTML = '<p class="text-xs text-slate-500">반복 문의 데이터가 충분하지 않습니다 (최소 2주 이상 필요)</p>';
+      } else {
+        repeatList.innerHTML = repeatTags.slice(0, 5).map((item, i) => {
+          const badgeColor = item.weekCount >= 4 ? 'bg-red-500/20 text-red-400 border-red-500/30'
+            : item.weekCount >= 3 ? 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+            : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+          const barWidth = Math.round(item.total / repeatTags[0].total * 100);
+          return `<div class="relative">
+            <div class="flex items-center gap-3 px-3 py-2 rounded bg-slate-900/50">
+              <span class="text-xs text-slate-600 w-4 text-right">${i + 1}</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-medium text-slate-200 truncate">${item.tag}</span>
+                  <span class="px-1.5 py-0.5 text-[10px] font-semibold rounded border ${badgeColor}">${item.weekCount}주 반복</span>
+                </div>
+                <div class="mt-1 h-1 rounded-full bg-slate-700 overflow-hidden">
+                  <div class="h-full rounded-full bg-teal-500/60" style="width:${barWidth}%"></div>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-slate-300 whitespace-nowrap">${item.total}건</span>
+            </div>
+          </div>`;
+        }).join('');
+      }
+
+      // --- WoW 급증 ---
+      const surgeList = document.getElementById('surgeTagList');
+      if (weeks.length < 2) {
+        surgeList.innerHTML = '<p class="text-xs text-slate-500">급증 분석에 최소 2주 데이터가 필요합니다</p>';
+        return;
+      }
+
+      const currWeek = weeks[weeks.length - 1];
+      const prevWeek = weeks[weeks.length - 2];
+      const currTags = weeklyDetail[currWeek] || {};
+      const prevTags = weeklyDetail[prevWeek] || {};
+
+      // 현재 주 데이터가 너무 적으면 (진행 중인 주) 한 주 전 비교
+      const currTotal = Object.values(currTags).reduce((s, v) => s + v, 0);
+      const prevTotal = Object.values(prevTags).reduce((s, v) => s + v, 0);
+      let compareFrom, compareTo, fromLabel, toLabel;
+      if (currTotal < prevTotal * 0.3 && weeks.length >= 3) {
+        // 현재 주가 아직 초반 → 전전주 vs 전주 비교
+        compareFrom = weeklyDetail[weeks[weeks.length - 3]] || {};
+        compareTo = prevTags;
+        fromLabel = weeks[weeks.length - 3];
+        toLabel = prevWeek;
+      } else {
+        compareFrom = prevTags;
+        compareTo = currTags;
+        fromLabel = prevWeek;
+        toLabel = currWeek;
+      }
+
+      const surgeAllTags = new Set([...Object.keys(compareFrom), ...Object.keys(compareTo)]);
+      const surges = [];
+      surgeAllTags.forEach(tag => {
+        const from = compareFrom[tag] || 0;
+        const to = compareTo[tag] || 0;
+        const diff = to - from;
+        if (diff > 0 && to >= 2) {
+          const pct = from > 0 ? Math.round((to - from) / from * 100) : null;
+          surges.push({ tag, from, to, diff, pct });
+        }
+      });
+      surges.sort((a, b) => b.diff - a.diff);
+
+      if (surges.length === 0) {
+        surgeList.innerHTML = '<p class="text-xs text-slate-500">전주 대비 급증한 태그가 없습니다</p>';
+      } else {
+        const periodLabel = `${fromLabel} → ${toLabel}`;
+        surgeList.innerHTML = `<p class="text-[10px] text-slate-600 mb-2">${periodLabel} 비교</p>` +
+          surges.slice(0, 5).map((item, i) => {
+            const pctText = item.pct !== null ? `+${item.pct}%` : 'NEW';
+            const pctColor = item.pct === null ? 'bg-purple-500/20 text-purple-400 border-purple-500/30'
+              : item.pct >= 200 ? 'bg-red-500/20 text-red-400 border-red-500/30'
+              : item.pct >= 100 ? 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+              : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+            const barWidth = Math.round(item.diff / surges[0].diff * 100);
+            return `<div class="relative">
+              <div class="flex items-center gap-3 px-3 py-2 rounded bg-slate-900/50">
+                <span class="text-xs text-slate-600 w-4 text-right">${i + 1}</span>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-medium text-slate-200 truncate">${item.tag}</span>
+                    <span class="px-1.5 py-0.5 text-[10px] font-semibold rounded border ${pctColor}">${pctText}</span>
+                  </div>
+                  <div class="mt-1 h-1 rounded-full bg-slate-700 overflow-hidden">
+                    <div class="h-full rounded-full bg-amber-500/60" style="width:${barWidth}%"></div>
+                  </div>
+                </div>
+                <span class="text-xs text-slate-400 whitespace-nowrap">${item.from}→</span>
+                <span class="text-xs font-bold text-slate-200 whitespace-nowrap">${item.to}건</span>
+              </div>
+            </div>`;
+          }).join('');
+      }
     }
 
     function renderSegmentCharts(records) {
