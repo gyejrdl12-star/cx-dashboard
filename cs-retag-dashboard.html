@@ -20,6 +20,104 @@
 </head>
 <body class="bg-slate-900">
 
+  <!-- PIN 잠금 화면 -->
+  <div id="pinLock" class="fixed inset-0 z-[9999] bg-slate-900 flex items-center justify-center">
+    <div class="text-center">
+      <div class="w-12 h-12 bg-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      </div>
+      <h2 class="text-lg font-bold text-slate-100 mb-1">CX 대시보드</h2>
+      <p class="text-xs text-slate-500 mb-6">PIN을 입력하세요</p>
+      <div class="flex gap-3 justify-center mb-4" id="pinDots">
+        <div class="w-3 h-3 rounded-full bg-slate-700 transition" data-idx="0"></div>
+        <div class="w-3 h-3 rounded-full bg-slate-700 transition" data-idx="1"></div>
+        <div class="w-3 h-3 rounded-full bg-slate-700 transition" data-idx="2"></div>
+        <div class="w-3 h-3 rounded-full bg-slate-700 transition" data-idx="3"></div>
+      </div>
+      <p id="pinError" class="text-xs text-red-400 mb-4 h-4"></p>
+      <div class="grid grid-cols-3 gap-3 w-56 mx-auto">
+        <button onclick="pinInput(1)" class="pin-btn">1</button>
+        <button onclick="pinInput(2)" class="pin-btn">2</button>
+        <button onclick="pinInput(3)" class="pin-btn">3</button>
+        <button onclick="pinInput(4)" class="pin-btn">4</button>
+        <button onclick="pinInput(5)" class="pin-btn">5</button>
+        <button onclick="pinInput(6)" class="pin-btn">6</button>
+        <button onclick="pinInput(7)" class="pin-btn">7</button>
+        <button onclick="pinInput(8)" class="pin-btn">8</button>
+        <button onclick="pinInput(9)" class="pin-btn">9</button>
+        <div></div>
+        <button onclick="pinInput(0)" class="pin-btn">0</button>
+        <button onclick="pinDelete()" class="pin-btn text-slate-500">
+          <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414-6.414A2 2 0 0110.828 5H21a1 1 0 011 1v12a1 1 0 01-1 1H10.828a2 2 0 01-1.414-.586L3 12z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <style>
+    .pin-btn { width: 56px; height: 56px; border-radius: 50%; background: #1e293b; border: 1px solid #334155; color: #e2e8f0; font-size: 20px; font-weight: 600; cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; }
+    .pin-btn:hover { background: #334155; }
+    .pin-btn:active { background: #0d9488; border-color: #0d9488; transform: scale(0.95); }
+    @keyframes pin-shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-8px); } 40%,80% { transform: translateX(8px); } }
+    .pin-shake { animation: pin-shake 0.4s ease; }
+  </style>
+  <script>
+    (function() {
+      const PIN = '1010';
+      let entered = '';
+      const dots = document.querySelectorAll('#pinDots > div');
+      const errEl = document.getElementById('pinError');
+
+      if (sessionStorage.getItem('cx_pin_ok') === '1') {
+        document.getElementById('pinLock').remove();
+        return;
+      }
+
+      window.pinInput = function(n) {
+        if (entered.length >= 4) return;
+        entered += n;
+        updateDots();
+        if (entered.length === 4) {
+          if (entered === PIN) {
+            sessionStorage.setItem('cx_pin_ok', '1');
+            dots.forEach(d => d.style.background = '#0d9488');
+            setTimeout(() => {
+              document.getElementById('pinLock').style.opacity = '0';
+              document.getElementById('pinLock').style.transition = 'opacity .3s';
+              setTimeout(() => document.getElementById('pinLock').remove(), 300);
+            }, 200);
+          } else {
+            errEl.textContent = 'PIN이 올바르지 않습니다';
+            document.getElementById('pinDots').classList.add('pin-shake');
+            dots.forEach(d => d.style.background = '#ef4444');
+            setTimeout(() => {
+              entered = '';
+              updateDots();
+              errEl.textContent = '';
+              document.getElementById('pinDots').classList.remove('pin-shake');
+            }, 600);
+          }
+        }
+      };
+
+      window.pinDelete = function() {
+        entered = entered.slice(0, -1);
+        updateDots();
+      };
+
+      function updateDots() {
+        dots.forEach((d, i) => {
+          d.style.background = i < entered.length ? '#0d9488' : '#334155';
+        });
+      }
+
+      document.addEventListener('keydown', function(e) {
+        if (!document.getElementById('pinLock')) return;
+        if (e.key >= '0' && e.key <= '9') pinInput(parseInt(e.key));
+        else if (e.key === 'Backspace') pinDelete();
+      });
+    })();
+  </script>
+
   <!-- 고정 헤더 -->
   <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 shadow-sm">
     <div class="max-w-[1600px] mx-auto px-4 py-3 flex items-center justify-between">
