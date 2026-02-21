@@ -28,11 +28,28 @@
         <p class="text-xs text-slate-500">72개 마스터 태그 기반 재분류 + 고객 세그먼트 분석</p>
       </div>
       <div class="flex items-center gap-4">
-        <span class="text-xs text-slate-400">최종 업데이트: 2026. 2. 20.</span>
+        <span class="text-xs text-slate-400">최종 업데이트: <span id="lastUpdateDate">2026. 2. 20.</span></span>
+        <button onclick="toggleUpdateLog()" class="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium rounded transition flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          업데이트
+        </button>
         <button onclick="window.print()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-700 text-slate-300 text-xs font-medium rounded transition">인쇄/PDF</button>
       </div>
     </div>
   </header>
+
+  <!-- 업데이트 히스토리 패널 -->
+  <div id="updateLogPanel" class="hidden fixed top-14 right-4 z-50 w-96 max-h-[70vh] bg-slate-800 border border-slate-600 rounded-lg shadow-2xl overflow-hidden">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-slate-700 bg-slate-900">
+      <h3 class="text-sm font-bold text-slate-100">업데이트 히스토리</h3>
+      <button onclick="toggleUpdateLog()" class="text-slate-400 hover:text-slate-200 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="updateLogList" class="overflow-y-auto max-h-[calc(70vh-48px)] p-4 space-y-3"></div>
+  </div>
+  <!-- 패널 바깥 클릭 시 닫기 -->
+  <div id="updateLogOverlay" class="hidden fixed inset-0 z-40" onclick="toggleUpdateLog()"></div>
 
   <main class="max-w-[1600px] mx-auto px-4 py-6 space-y-8">
 
@@ -1245,9 +1262,40 @@
     }
 
 
+    // === 업데이트 히스토리 ===
+    const UPDATE_LOG = [
+      { date: '2026-02-21', items: ['업데이트 히스토리 기능 추가', 'GitHub Pages 배포'] },
+      { date: '2026-02-20', items: ['초기 대시보드 생성', '72개 마스터 태그 기반 재분류 적용', '고객 세그먼트 크로스 분석 추가'] },
+    ];
+
+    function renderUpdateLog() {
+      const list = document.getElementById('updateLogList');
+      list.innerHTML = UPDATE_LOG.map((log, i) => `
+        <div class="relative pl-5 ${i < UPDATE_LOG.length - 1 ? 'pb-3 border-l border-slate-700 ml-1' : 'ml-1'}">
+          <div class="absolute -left-[3px] top-1.5 w-2 h-2 rounded-full ${i === 0 ? 'bg-teal-400' : 'bg-slate-600'}"></div>
+          <p class="text-xs font-semibold ${i === 0 ? 'text-teal-400' : 'text-slate-400'}">${log.date}</p>
+          <ul class="mt-1 space-y-0.5">
+            ${log.items.map(item => `<li class="text-xs text-slate-300">• ${item}</li>`).join('')}
+          </ul>
+        </div>
+      `).join('');
+      // 최종 업데이트 날짜 동기화
+      document.getElementById('lastUpdateDate').textContent = UPDATE_LOG[0].date.replace(/-/g, '. ') + '.';
+    }
+
+    function toggleUpdateLog() {
+      const panel = document.getElementById('updateLogPanel');
+      const overlay = document.getElementById('updateLogOverlay');
+      const isHidden = panel.classList.contains('hidden');
+      panel.classList.toggle('hidden');
+      overlay.classList.toggle('hidden');
+      if (isHidden) renderUpdateLog();
+    }
+
     // Initial render
     applyFilter();
     renderVocSection();
+    renderUpdateLog();
   </script>
 </body>
 </html>
