@@ -571,6 +571,50 @@
       return d.getFullYear() + '-W' + String(week).padStart(2, '0');
     }
 
+    const TAG_VOICES = {
+      '구독/GWS/이용문의': '구글 워크스페이스 요금, 계정 추가, 라이선스 변경 방법을 모르겠어요',
+      '카드/이용문의/이용방법': '카드 어디서 쓸 수 있는지, 온라인 결제는 어떻게 하는지 알고 싶어요',
+      '카드/한도/설정/변경': '한도를 바꾸고 싶은데 어디서 설정하는지 모르겠어요',
+      '카드/발급/신규발급': '법인카드 새로 만들고 싶어요, 발급 절차가 어떻게 되나요',
+      '카드/결제/결제문의': '결제가 안 되거나, 승인이 거절됐는데 이유를 모르겠어요',
+      '카드/발급/추가발급': '직원 카드를 추가로 발급하고 싶어요',
+      '지출관리/멤버관리/정보변경': '담당자 이름이나 부서가 바뀌었는데 수정이 안 돼요',
+      '지출관리/이용내역/이용문의': '이용내역이 안 보이거나, 특정 거래 내역을 확인하고 싶어요',
+      '서비스/상담/상담원연결': '챗봇으로 해결이 안 돼요, 사람이랑 직접 이야기하고 싶어요',
+      '카드/한도/상향신청': '한도가 부족해서 올리고 싶은데 방법을 모르겠어요',
+      '카드/공동인증서/등록/연동': '공동인증서 등록이 안 되거나 연동에서 오류가 나요',
+      '서비스/상담/고객센터문의': '전화번호나 운영시간 등 고객센터 연락처를 알고 싶어요',
+      '지출관리/이용내역/영수증제출': '영수증을 어디서 어떻게 제출하는지 모르겠어요',
+      '카드/분실/도난/신고': '카드를 잃어버렸는데 빨리 정지시키고 싶어요',
+      '서비스/FUEL/이용문의': 'FUEL 서비스 이용 방법이나 혜택이 궁금해요',
+      '카드/한도/조회': '현재 한도가 얼마인지, 잔여 한도를 확인하고 싶어요',
+      '카드/한도/보증금': '보증금 납부나 반환 절차가 궁금해요',
+      '지출관리/멤버관리/권한설정': '팀원별 권한을 다르게 설정하고 싶은데 방법을 모르겠어요',
+      '구독/IT기기/반납': '렌탈 기기 반납 절차나 일정이 궁금해요',
+      '지출관리/멤버관리/삭제/퇴사처리': '퇴사자 계정을 삭제하고 싶은데 어떻게 하나요',
+      '지출관리/경비정책/설정': '경비 정책을 새로 만들거나 수정하고 싶어요',
+      '카드/이용문의/상담원연결': '카드 관련해서 상담원이랑 직접 통화하고 싶어요',
+      '서비스/개선제안/기능요청': '이런 기능이 있었으면 좋겠어요, 개선해주세요',
+      '카드/도입/가입/회원가입': '고위드 서비스에 처음 가입하려는데 절차가 궁금해요',
+      '구독/IT기기/렌탈문의': 'IT 기기 렌탈 가격이나 모델, 조건이 궁금해요',
+      '구독/GWS/리셀러이전': '다른 리셀러에서 고위드로 이전하고 싶어요',
+      '카드/혜택/포인트/캐시백': '포인트나 캐시백이 얼마나 쌓였는지, 어떻게 쓰는지 알고 싶어요',
+      '카드/발급/진행일정': '카드 신청했는데 언제 받을 수 있나요',
+      '지출관리/계정/로그인오류': '로그인이 안 돼요, 비밀번호를 잊어버렸어요',
+      '지출관리/이용내역/다운로드': '이용내역을 엑셀이나 PDF로 다운받고 싶어요',
+      '카드/결제/결제오류': '결제 시 오류가 나는데 원인을 모르겠어요',
+      '구독/IT기기/이용문의': 'IT 기기 사용 중 문제가 생겼어요',
+    };
+
+    function getTagVoice(tag) {
+      if (TAG_VOICES[tag]) return TAG_VOICES[tag];
+      // fallback: 태그 경로에서 자동 생성
+      const parts = tag.split('/');
+      if (parts.length >= 3) return `${parts[1]} 관련 ${parts[2]} 문의`;
+      if (parts.length >= 2) return `${parts[0]} 관련 ${parts[1]} 문의`;
+      return null;
+    }
+
     function renderTagInsights(records) {
       // 주차별 세부 태그 집계
       const weeklyDetail = {};
@@ -605,19 +649,24 @@
             : item.weekCount >= 3 ? 'bg-orange-500/20 text-orange-400 border-orange-500/30'
             : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
           const barWidth = Math.round(item.total / repeatTags[0].total * 100);
+          const voice = getTagVoice(item.tag);
+          const voiceHtml = voice ? `<p class="text-[11px] text-slate-500 mt-0.5 italic">"${voice}"</p>` : '';
           return `<div class="relative">
-            <div class="flex items-center gap-3 px-3 py-2 rounded bg-slate-900/50">
-              <span class="text-xs text-slate-600 w-4 text-right">${i + 1}</span>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2">
-                  <span class="text-xs font-medium text-slate-200 truncate">${item.tag}</span>
-                  <span class="px-1.5 py-0.5 text-[10px] font-semibold rounded border ${badgeColor}">${item.weekCount}주 반복</span>
+            <div class="px-3 py-2 rounded bg-slate-900/50">
+              <div class="flex items-center gap-3">
+                <span class="text-xs text-slate-600 w-4 text-right">${i + 1}</span>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-medium text-slate-200 truncate">${item.tag}</span>
+                    <span class="px-1.5 py-0.5 text-[10px] font-semibold rounded border ${badgeColor}">${item.weekCount}주 반복</span>
+                  </div>
+                  <div class="mt-1 h-1 rounded-full bg-slate-700 overflow-hidden">
+                    <div class="h-full rounded-full bg-teal-500/60" style="width:${barWidth}%"></div>
+                  </div>
                 </div>
-                <div class="mt-1 h-1 rounded-full bg-slate-700 overflow-hidden">
-                  <div class="h-full rounded-full bg-teal-500/60" style="width:${barWidth}%"></div>
-                </div>
+                <span class="text-xs font-bold text-slate-300 whitespace-nowrap">${item.total}건</span>
               </div>
-              <span class="text-xs font-bold text-slate-300 whitespace-nowrap">${item.total}건</span>
+              ${voiceHtml}
             </div>
           </div>`;
         }).join('');
@@ -677,20 +726,25 @@
               : item.pct >= 100 ? 'bg-orange-500/20 text-orange-400 border-orange-500/30'
               : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
             const barWidth = Math.round(item.diff / surges[0].diff * 100);
+            const voice = getTagVoice(item.tag);
+            const voiceHtml = voice ? `<p class="text-[11px] text-slate-500 mt-0.5 italic">"${voice}"</p>` : '';
             return `<div class="relative">
-              <div class="flex items-center gap-3 px-3 py-2 rounded bg-slate-900/50">
-                <span class="text-xs text-slate-600 w-4 text-right">${i + 1}</span>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2">
-                    <span class="text-xs font-medium text-slate-200 truncate">${item.tag}</span>
-                    <span class="px-1.5 py-0.5 text-[10px] font-semibold rounded border ${pctColor}">${pctText}</span>
+              <div class="px-3 py-2 rounded bg-slate-900/50">
+                <div class="flex items-center gap-3">
+                  <span class="text-xs text-slate-600 w-4 text-right">${i + 1}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-medium text-slate-200 truncate">${item.tag}</span>
+                      <span class="px-1.5 py-0.5 text-[10px] font-semibold rounded border ${pctColor}">${pctText}</span>
+                    </div>
+                    <div class="mt-1 h-1 rounded-full bg-slate-700 overflow-hidden">
+                      <div class="h-full rounded-full bg-amber-500/60" style="width:${barWidth}%"></div>
+                    </div>
                   </div>
-                  <div class="mt-1 h-1 rounded-full bg-slate-700 overflow-hidden">
-                    <div class="h-full rounded-full bg-amber-500/60" style="width:${barWidth}%"></div>
-                  </div>
+                  <span class="text-xs text-slate-400 whitespace-nowrap">${item.from}→</span>
+                  <span class="text-xs font-bold text-slate-200 whitespace-nowrap">${item.to}건</span>
                 </div>
-                <span class="text-xs text-slate-400 whitespace-nowrap">${item.from}→</span>
-                <span class="text-xs font-bold text-slate-200 whitespace-nowrap">${item.to}건</span>
+                ${voiceHtml}
               </div>
             </div>`;
           }).join('');
