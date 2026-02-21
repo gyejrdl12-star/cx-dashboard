@@ -646,17 +646,32 @@
       if (tagRecords.length === 0) return '';
       const detailId = idPrefix + '-detail-' + tag.replace(/[\/\s]/g, '_');
       return `<div id="${detailId}" class="hidden mt-1.5 ml-7 border-l-2 border-slate-700 pl-3">
-        <div class="max-h-48 overflow-y-auto space-y-0.5">
-          ${tagRecords.map(r => {
-            const chatUrl = CHANNELTALK_BASE + r.chatId;
-            return `<div class="flex items-center gap-2 py-1 px-2 rounded hover:bg-slate-800/80 group text-[11px]">
-              <span class="text-slate-500 w-14 shrink-0">${r.date.slice(5)}</span>
-              <span class="text-slate-300 truncate flex-1" title="${r.company || ''}">${r.company || '-'}</span>
-              <a href="${chatUrl}" target="_blank" rel="noopener" class="text-teal-500 hover:text-teal-400 shrink-0 opacity-60 group-hover:opacity-100 transition" title="채널톡에서 보기">
-                <svg class="w-3.5 h-3.5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-              </a>
-            </div>`;
-          }).join('')}
+        <div class="max-h-60 overflow-y-auto">
+          <table class="w-full text-[11px]">
+            <thead class="sticky top-0 bg-slate-900">
+              <tr class="text-slate-500 border-b border-slate-700">
+                <th class="text-left py-1 px-2 font-medium w-32">회사</th>
+                <th class="text-left py-1 px-2 font-medium">요약</th>
+                <th class="text-center py-1 px-2 font-medium w-8"></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tagRecords.map(r => {
+                const chatUrl = CHANNELTALK_BASE + r.chatId;
+                const summary = r.summary || r.oldTag || '-';
+                const companyShort = (r.company || '-').replace(/^(주식회사|주\)|㈜)\s*/, '').replace(/\s*\(.*\)$/, '');
+                return `<tr class="hover:bg-slate-800/80 group border-b border-slate-800/50">
+                  <td class="py-1.5 px-2 text-slate-300 truncate max-w-[120px]" title="${r.company || ''}">${companyShort}</td>
+                  <td class="py-1.5 px-2 text-slate-400 truncate" title="${summary}">${summary}</td>
+                  <td class="py-1.5 px-2 text-center">
+                    <a href="${chatUrl}" target="_blank" rel="noopener" class="text-teal-500 hover:text-teal-400 opacity-60 group-hover:opacity-100 transition" title="채널톡에서 보기">
+                      <svg class="w-3.5 h-3.5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+                  </td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
         </div>
       </div>`;
     }
