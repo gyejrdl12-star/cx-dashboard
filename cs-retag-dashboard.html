@@ -144,7 +144,7 @@
             <h3 class="text-sm font-semibold text-slate-300">대분류별 TOP 10 태그</h3>
           </div>
           <div class="flex gap-1 mb-2 flex-wrap" id="categoryTabs"></div>
-          <div style="max-height:500px"><canvas id="categoryTopChart"></canvas></div>
+          <div style="height:500px"><canvas id="categoryTopChart"></canvas></div>
         </div>
       </div>
     </section>
@@ -549,7 +549,7 @@
           labels: labels,
           datasets: [{ label: '건수', data: top.map(e => e[1]), backgroundColor: '#0d9488', borderRadius: 4 }]
         },
-        options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false }, datalabels: { display: true, anchor: 'end', align: 'right', color: '#e2e8f0', font: { size: 10, weight: 'bold' } } }, scales: { x: { beginAtZero: true, ticks: { font: { size: 10 } } }, y: { ticks: { font: { size: 10 } } } } }
+        options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false }, datalabels: { display: true, anchor: 'end', align: 'right', color: '#e2e8f0', font: { size: 11, weight: 'bold' } } }, scales: { x: { beginAtZero: true, ticks: { font: { size: 11 } } }, y: { ticks: { font: { size: 11 }, autoSkip: false } } }, barThickness: 18 }
       });
     }
 
