@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>카드사 미팅 자료 — CX 문의 유형 분석</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .section { scroll-margin-top: 80px; }
+    @media print {
+      body { background: white !important; color: black !important; }
+      .no-print { display: none !important; }
+      .print-break { page-break-before: always; }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-extrabold text-white">카드사 미팅 자료</h1>
+        <p class="text-sm text-slate-400">CX 문의 유형 분석 — 고위드 ↔ 카드사 협업 포인트</p>
+      </div>
+      <div class="flex items-center gap-3 no-print">
+        <span class="text-xs text-slate-500">2026.01.26 ~ 02.19 · 203건 분석</span>
+        <button onclick="window.print()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs rounded transition">PDF 저장</button>
+      </div>
+    </div>
+    <nav class="max-w-5xl mx-auto px-6 pb-2 flex gap-4 no-print">
+      <a href="#summary" class="text-xs text-slate-400 hover:text-white transition">요약</a>
+      <a href="#catA" class="text-xs text-amber-400 hover:text-amber-300 transition">A. 고위드 중계</a>
+      <a href="#catB" class="text-xs text-rose-400 hover:text-rose-300 transition">B. 카드사 직접</a>
+      <a href="#catC" class="text-xs text-slate-400 hover:text-slate-300 transition">C. 단순 문의</a>
+      <a href="#action" class="text-xs text-teal-400 hover:text-teal-300 transition">제안</a>
+    </nav>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-8 space-y-10">
+
+    <!-- ═══════ 요약 ═══════ -->
+    <section id="summary" class="section">
+      <h2 class="text-lg font-extrabold text-white mb-4">전체 요약</h2>
+      <p class="text-sm text-slate-400 mb-6">최근 약 4주간 CX 상담 <b class="text-white">203건</b>을 분석하여, 카드사와의 접점이 있는 문의를 3가지로 분류했습니다.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <!-- A -->
+        <div class="bg-slate-800 rounded-xl border border-amber-500/30 p-5">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center text-amber-400 font-bold text-sm">A</div>
+            <p class="text-sm font-bold text-amber-300">고위드 중계</p>
+          </div>
+          <p class="text-3xl font-extrabold text-white">43<span class="text-lg text-slate-500 ml-1">건</span></p>
+          <p class="text-xs text-slate-500 mt-1">전체의 21%</p>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">고위드가 카드사에 <b>대신 확인·요청</b> 후 고객에게 결과 전달</p>
+        </div>
+        <!-- B -->
+        <div class="bg-slate-800 rounded-xl border border-rose-500/30 p-5">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-8 h-8 bg-rose-500/20 rounded-lg flex items-center justify-center text-rose-400 font-bold text-sm">B</div>
+            <p class="text-sm font-bold text-rose-300">카드사 직접</p>
+          </div>
+          <p class="text-3xl font-extrabold text-white">24<span class="text-lg text-slate-500 ml-1">건</span></p>
+          <p class="text-xs text-slate-500 mt-1">전체의 12%</p>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">고위드가 해결 불가, 고객을 <b>카드사 고객센터로 안내</b></p>
+        </div>
+        <!-- C -->
+        <div class="bg-slate-800 rounded-xl border border-slate-600 p-5">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center text-slate-400 font-bold text-sm">C</div>
+            <p class="text-sm font-bold text-slate-300">단순 문의</p>
+          </div>
+          <p class="text-3xl font-extrabold text-white">136<span class="text-lg text-slate-500 ml-1">건</span></p>
+          <p class="text-xs text-slate-500 mt-1">전체의 67%</p>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">고위드 내에서 <b>바로 해결</b> 가능한 건</p>
+        </div>
+      </div>
+
+      <!-- Donut Chart -->
+      <div class="bg-slate-800 rounded-xl border border-slate-700 p-5 flex items-center justify-center">
+        <div style="width:280px;height:280px"><canvas id="summaryChart"></canvas></div>
+        <div class="ml-8 space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+            <span class="text-sm text-slate-300">A. 고위드 중계 — <b class="text-white">21%</b></span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full bg-rose-400"></span>
+            <span class="text-sm text-slate-300">B. 카드사 직접 — <b class="text-white">12%</b></span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full bg-slate-500"></span>
+            <span class="text-sm text-slate-300">C. 단순 문의 — <b class="text-white">67%</b></span>
+          </div>
+          <div class="pt-3 border-t border-slate-700">
+            <p class="text-xs text-slate-400">카드사 관련 문의(A+B)가 전체의 <b class="text-amber-300">33%</b></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ A. 고위드 중계 ═══════ -->
+    <section id="catA" class="section print-break">
+      <div class="flex items-center gap-3 mb-1">
+        <div class="w-9 h-9 bg-amber-500/20 rounded-xl flex items-center justify-center text-amber-400 font-bold">A</div>
+        <div>
+          <h2 class="text-lg font-extrabold text-white">고위드 중계 Top 10</h2>
+          <p class="text-xs text-slate-500">고위드가 카드사에 확인·요청 후 고객에게 전달하는 문의</p>
+        </div>
+        <span class="ml-auto text-2xl font-extrabold text-amber-400">43건</span>
+      </div>
+      <div class="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3 mb-4">
+        <p class="text-xs text-amber-200">💡 <b>카드사에 바라는 점</b>: 이 유형의 문의는 고위드-카드사 간 <b>처리 속도</b>와 <b>정보 접근성</b>이 개선되면 응대 시간을 대폭 줄일 수 있습니다.</p>
+      </div>
+      <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-900 border-b border-slate-700">
+            <tr>
+              <th class="px-4 py-2 text-center text-xs font-semibold text-slate-500 w-12">#</th>
+              <th class="px-4 py-2 text-left text-xs font-semibold text-slate-500">문의 유형</th>
+              <th class="px-4 py-2 text-center text-xs font-semibold text-slate-500 w-16">건수</th>
+              <th class="px-4 py-2 text-xs font-semibold text-slate-500 w-32"></th>
+              <th class="px-4 py-2 text-left text-xs font-semibold text-slate-500">대표 사례</th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-amber-400">1</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">상담/상담원연결</p>
+            <p class="text-[10px] text-slate-600">서비스/상담/상담원연결</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">5</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-400 rounded-full" style="width:100%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;현재 6장 카드 발급 받아 5장을 사용중인데, 카드 비밀번호를 동일하게 설정했는지 카드마다 비번이 다른지 확인하고 싶어요 어디서 확인할 수 있을까요?&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;@ALF 신한카드 카드 비밀번호 확인 방법 알려줘 안녕하세요. 현선님.  고위드입니다.    신한카드 비밀번호의 경우 고객님의 개인정보로, 고위드에서 확인이 불가한 정보입니다.&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-amber-400">2</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">발급/추가발급</p>
+            <p class="text-[10px] text-slate-600">카드/발급/추가발급</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">3</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-400 rounded-full" style="width:60%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;안녕하세요! 비씨카드 추가 발급 받으려 하는데,  지난 주에 신청을 완료..했던 것 같은데  아직 신청중이에요 라는 문구가 떠서요  🥹      해당 화면 중, 인증서 추가 연동 버튼을 누르면 기본 홈페이지로 돌아가&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;도 검토를 요청하셔야 하고, 그 때 작성하시는 한도는 신한카드 한도(현재 사용중 한도) + 비씨카드 한도(추가로 받으실 한도)로 작성햐셔야 한다. 현재 신한 신한: 500,000,000원 한도 사용 중이시니 여기에 &rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-amber-400">3</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">공동인증서/등록/연동</p>
+            <p class="text-[10px] text-slate-600">카드/공동인증서/등록/연동</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">3</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-400 rounded-full" style="width:60%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;(주)프라이데이스튜디오/434-88-02136  범용 CrossCert 공동인증서 기간만료 안내가 뜨는데 저희는 tradesign 공동인증서만 사용되는거같아서요&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;안녕하세요 수빈님, 고위드입니다.  확인 후 안내 도와드리겠습니다. 잠시만 대기해주시면 감사하겠습니다! 수빈님, 죄송합니다  확인을 위해 잠시 시간이 소요되고 있습니다.  이용에 불편드려 죄송합니다.&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-amber-400">4</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">발급/신규발급</p>
+            <p class="text-[10px] text-slate-600">카드/발급/신규발급</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">3</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-400 rounded-full" style="width:60%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;안녕하세요! 담당자님,   당사 카드 중에서 5790카드에 마케팅 비용을 사용하고 있습니다.     기존에는 광고비 비용이 적어서, 고위드 일반카드를 사용하였으나, 현재 광고비가 증가할 예정으로 광고비에 특화된 카드&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;다.    현재 고위드와 제휴된 법인 신용카드(신한, 롯데)는 광고비 결제 시 최대 0.5%의 페이백 또는 포인트 적립 혜택을 제공합니다. 이는 법적으로 허용되는 일반적인 법인 신용카드 혜택 범위 내에서 제공되는 최&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-amber-400">5</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">한도/보증금</p>
+            <p class="text-[10px] text-slate-600">카드/한도/보증금</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">3</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-400 rounded-full" style="width:60%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;상담사 연결&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;있습니다. 잠시만 시간 양해 부탁드립니다. 네 정보 확인 후 안내 도움드리도록 하겠습니다.    - 사업자등록번호 :  - 법인명 :  위 사항 기재 부탁드립니다. 😀 소중한 정보 제공 감사드립니다. 확인이 진행되는&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-amber-400">6</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">한도/조회</p>
+            <p class="text-[10px] text-slate-600">카드/한도/조회</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">2</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-400 rounded-full" style="width:40%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;안녕하세요 법인카드 상향 신청 문의 드립니다.  1월 중 진행했었는데, 심사는 완료되었는데 계속하여 오류가 발생하는 것 같습니다. (동일 화면 재송신) 관련하여 확인 부탁 드립니다. 감사합니다.    - 알리콘 주식&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;지금 만나보시는 화면이 어떻게 되실까요? 오류일 시 확인 후 응대 도와드리고자 합니다! 상세하게 안내해드리기 위해 말씀해주신 증상에 대한 전체화면 캡쳐본을 보내주시면 감사하겠습니다.&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-amber-400">7</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">API/연동문의</p>
+            <p class="text-[10px] text-slate-600">지출관리/API/연동문의</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">2</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-400 rounded-full" style="width:40%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;안녕하세요, 사용가이드에서 고위드에서 사용내역에 관한 API를 제공하는 안내를 확인했습니다. API 사용하려면 어떤 절차를 거쳐야 하는지 설명해주시면 감사하겠습니다.&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;정 메일로만 api 발송이 가능합니다.  한도상향/신규카드사 입회가 가능한 슈퍼관리자 분께 내부 협의 후 해당 이메일 전달 부탁드립니다!    우선적으로, 해당 상담창에 API Key 발급을 위해 아래 내용 전달 부&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-amber-400">8</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">도입/가입/도입문의</p>
+            <p class="text-[10px] text-slate-600">카드/도입/가입/도입문의</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">2</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-400 rounded-full" style="width:40%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;고위드 카드를 더이상 사용하지 않아 사이트를 탈퇴하려고 합니다&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;법인께서 신한카드 사용하셨던 것으로 확인되십니다. 신한카드사 탈회만 희망하시는 걸까요, 고위드 탈회까지 함께 진행 희망하실까요? 확인 감사합니다. 담당자 확인 후 안내드릴 수 있도록 하겠습니다!   잠시만 기다려주시&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-amber-400">9</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">이용내역/다운로드</p>
+            <p class="text-[10px] text-slate-600">지출관리/이용내역/다운로드</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">2</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-400 rounded-full" style="width:40%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;카드 이용내역을 일반 엑셀 파일로 다운로드하면 일부 불공제 항목에서 부가세금액이 나옵니다.&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;보여지는 부가세는 해당 거래의 원래 부가세 금액으로, 카드사에서 고위드로 전달해 주는 데이터 그대로를 보여주는 것입니다. 공제/불공제 여부와는 별개로 실제로 발생한 부가세를 나타냅니다.    일반 엑셀 양식에는 이미&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-amber-400">10</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">GWS/이용문의</p>
+            <p class="text-[10px] text-slate-600">구독/GWS/이용문의</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">2</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-400 rounded-full" style="width:40%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;상담사연결&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;유분 해당 오류에 대해 확인을 했고 구글 측에 저희가 확인 후 안내를 도와드리겠습니다. 혹시 계정 생성시 뜨는 오류를 스크린샷 해주실 수 있으실까요? 해당 내용 확인 중에 있습니다! 오늘 중으로 빠르게 도와드리고자 &rdquo;</p></div></td>
+        </tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════ B. 카드사 직접 ═══════ -->
+    <section id="catB" class="section print-break">
+      <div class="flex items-center gap-3 mb-1">
+        <div class="w-9 h-9 bg-rose-500/20 rounded-xl flex items-center justify-center text-rose-400 font-bold">B</div>
+        <div>
+          <h2 class="text-lg font-extrabold text-white">카드사 직접 Top 10</h2>
+          <p class="text-xs text-slate-500">고위드가 해결 불가, 고객을 카드사 고객센터로 안내하는 문의</p>
+        </div>
+        <span class="ml-auto text-2xl font-extrabold text-rose-400">24건</span>
+      </div>
+      <div class="bg-rose-500/5 border border-rose-500/20 rounded-lg p-3 mb-4">
+        <p class="text-xs text-rose-200">⚠️ <b>고객 경험 리스크</b>: 고객이 고위드에 먼저 문의했다가 카드사로 다시 연락해야 하는 <b>이중 문의</b> 구조. API/프로세스 개선으로 고위드에서 직접 처리 가능하면 CX 개선 효과 큼.</p>
+      </div>
+      <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-900 border-b border-slate-700">
+            <tr>
+              <th class="px-4 py-2 text-center text-xs font-semibold text-slate-500 w-12">#</th>
+              <th class="px-4 py-2 text-left text-xs font-semibold text-slate-500">문의 유형</th>
+              <th class="px-4 py-2 text-center text-xs font-semibold text-slate-500 w-16">건수</th>
+              <th class="px-4 py-2 text-xs font-semibold text-slate-500 w-32"></th>
+              <th class="px-4 py-2 text-left text-xs font-semibold text-slate-500">대표 사례</th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-rose-400">1</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">발급/추가발급</p>
+            <p class="text-[10px] text-slate-600">카드/발급/추가발급</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">4</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-rose-400 rounded-full" style="width:100%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;안녕하세요 저는 김규미라고 합니다. (주)TGWP로 법인카드 롯데카드로 신청하려고 하는데 비대면 발급이 어려워 고객센터로 문의주세요 라고 떠가지고 문의드립니다&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;다음 절차를 따라 주시기 바랍니다.    1. 기존 롯데카드 해지: 보유하고 계신 모든 롯데카드를 롯데카드 고객센터(1599-8800)를 통해 먼저 고위드 롯데카드 발급을 위해 해지하고자 한다고 말씀해 주시기 바랍니&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-rose-400">2</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">상담/고객센터문의</p>
+            <p class="text-[10px] text-slate-600">서비스/상담/고객센터문의</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">3</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-rose-400 rounded-full" style="width:75%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;안녕하세요 담당자님,   기존 망고 매니저님과 대화한 내용 관련 하여 추가 문의 드리고 싶습니다.   고위드 광고비 체크카드 관련하여, 문의드리고 싶습니다.     혹시 발행 방법 및 소요시간, 발급 후 관리 방법(&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;더 편하실까요? 고위드 고객센터 (1551-9020) ARS 선택 시 5번 으로 문의주시면 안내 도와드리도록 하겠습니다.    1. 고위드 체크카드의 경우에도 고위드 사이트상에서 직원 직접 입력 가능한지&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-rose-400">3</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">상담/상담원연결</p>
+            <p class="text-[10px] text-slate-600">서비스/상담/상담원연결</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">3</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-rose-400 rounded-full" style="width:75%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;회사 사무실 관리비를 카드에 등록해서 자동 납부 되도록 할수있나요?&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;연락하시어 자동 이체 등록을 해주시면 되겠습니다.   신한카드 고객센터 번호 안내함께 드립니다.   - 신한카드 대표번호: 1544-7000 고객님, 혹시 말씀주신 문제는 해결되었을까요?     장시간 답변이 없으&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-rose-400">4</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">이용문의/상담원연결</p>
+            <p class="text-[10px] text-slate-600">카드/이용문의/상담원연결</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">2</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-rose-400 rounded-full" style="width:50%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;저희 법인 신한카드는 공동인증서 로그인만 사용 중인데, 고위드 카드사 총괄 관리자 계정 연동 화면에서 ID/PW 방식만 노출됩니다. 이 경우 어떻게 해야 하나요&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;행 후 고위드 연동 부탁드립니다.    연동 이후에도 신한카드 홈페이지에서 보유 내역에 고위드 카드가 확인되지 않을 시 신한카드 고객센터로 문의 부탁드립니다. 바로 안내를 도와드리지 못해 죄송합니다.    - 신한카&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-rose-400">5</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">계정/로그인오류</p>
+            <p class="text-[10px] text-slate-600">지출관리/계정/로그인오류</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">2</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-rose-400 rounded-full" style="width:50%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;금일 14시 33분경 롯데 7800카드로 칠곡경북대병원에서 총 45100원 결제 진행 완료했으나 고위드 관리카드 탭에서 결제내역이 확인되지 않습니다. 확인 부탁드립니다.&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;. 확인했는데 결제 내역이 없음  3. 그렇기 때문에 카드사 홈페이지에서 결제 내역 있으신지 확인 요청 하기 해령님 내부적으로도 확인 진행 중에 있습니다만, 혹시 롯데법인카드 홈페이지 접속하시어 해당 결제 건이&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-rose-400">6</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">분실/도난/신고</p>
+            <p class="text-[10px] text-slate-600">카드/분실/도난/신고</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">1</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-rose-400 rounded-full" style="width:25%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;미사용 카드 등록&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;중이신 카드가 롯데카드로 확인되십니다.  롯데카드는 카드사 홈페이지 등록 후 최대 3시간까지 고위드 반영에 소요될 수 있습니다.  우선 카드사 홈페이지에서 사용 등록을 완료하셨으면 카드 결제하실 때는 문제없이&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-rose-400">7</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">이용문의/이용방법</p>
+            <p class="text-[10px] text-slate-600">카드/이용문의/이용방법</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">1</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-rose-400 rounded-full" style="width:25%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;주식회사 모드하우스 127-87-02153  문의 사항 : 폐기된 카드를 카드 관리 목록에서 삭제할 수 있는 방법이 있나요? 카드 목록 업데이트를 실행해도 폐기된 카드가 그대로 있어 별도 방법이 있는지 문의드립니다&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;군요.    카드 관리 시스템에서 사용/미사용 여부를 직접 선택하는 기능은 일반적으로 제공되지 않습니다. 카드의 상태는 카드사로부터 전달받는 정보에 따라 자동으로 업데이트됩니다.    폐기된 카드가 사용 카드로 분류&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-rose-400">8</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">한도/상향신청</p>
+            <p class="text-[10px] text-slate-600">카드/한도/상향신청</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">1</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-rose-400 rounded-full" style="width:25%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;[신한] 법인 유효기한 갱신&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;우, 먼저 말씀드리기 어렵습니다. 고위드 홈페이지에서 직접 신청/확인해주셔야 합니다. [카드사 입회/한도 신청 &gt; 한도 조회하기 클릭&gt; 공동인증서 연동 &gt; 한도조회 &gt; 원하시는 한도 나오지 않으&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-rose-400">9</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">발급/신규발급</p>
+            <p class="text-[10px] text-slate-600">카드/발급/신규발급</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">1</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-rose-400 rounded-full" style="width:25%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;안녕하세요.&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;하여 카드가 정상 등록되었는지 확인합니다.    2. ARS를 통한 사용 등록 방법  - 무기명 카드 (법인 공용카드)  - 카드를 소지한 상태로 ☎️ 1599-8800으로 전화합니다.    - `1번`&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-rose-400">10</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">이용내역/조회</p>
+            <p class="text-[10px] text-slate-600">지출관리/이용내역/조회</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">1</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-rose-400 rounded-full" style="width:25%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;모비두 주식회사(120-88-01596)  1월 대중교통비 사용내역이 2월 화면에서 조회됩니다. 카드사 사이트 상에도 1월 내역에서 조회됩니다.&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;쳐본은 결제단계의 최신화된 내역이 확인되고 있습니다. 카드사 홈페이지에서 승인 내역이 아닌 매입 내역 탭을 확인해주시면 동일한 일자와 금액을 확인하실 수 있을텐데 혹시 확인해주실 수 있으실까요? 제품이슈제보로 승&rdquo;</p></div></td>
+        </tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════ C. 단순 문의 ═══════ -->
+    <section id="catC" class="section print-break">
+      <div class="flex items-center gap-3 mb-1">
+        <div class="w-9 h-9 bg-slate-700 rounded-xl flex items-center justify-center text-slate-400 font-bold">C</div>
+        <div>
+          <h2 class="text-lg font-extrabold text-white">단순 문의 Top 10</h2>
+          <p class="text-xs text-slate-500">고위드 내에서 바로 답변 가능한 일반 문의 (참고용)</p>
+        </div>
+        <span class="ml-auto text-2xl font-extrabold text-slate-400">136건</span>
+      </div>
+      <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-900 border-b border-slate-700">
+            <tr>
+              <th class="px-4 py-2 text-center text-xs font-semibold text-slate-500 w-12">#</th>
+              <th class="px-4 py-2 text-left text-xs font-semibold text-slate-500">문의 유형</th>
+              <th class="px-4 py-2 text-center text-xs font-semibold text-slate-500 w-16">건수</th>
+              <th class="px-4 py-2 text-xs font-semibold text-slate-500 w-32"></th>
+              <th class="px-4 py-2 text-left text-xs font-semibold text-slate-500">대표 사례</th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-slate-400">1</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">GWS/이용문의</p>
+            <p class="text-[10px] text-slate-600">구독/GWS/이용문의</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">32</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-slate-400 rounded-full" style="width:100%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;안녕하세요. 고위드 신규 가입 상담 중인 헬로스킨 인사팀 지소영입니다. 전 직장에서 고위드 사용했어서 그대로 도입하고자 합니다.   1. 저희는 자체 기장을 하고 있지 않고 세무법인을 통해 기장 중입니다. 위하고를 &rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-slate-400">2</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">상담/상담원연결</p>
+            <p class="text-[10px] text-slate-600">서비스/상담/상담원연결</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">11</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-slate-400 rounded-full" style="width:34%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;지금 법인 카드 결제가 안되서 사용이 안되는데 오늘 안에 결제 되나요?&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;[상담요약]  - 고객사: 고위드  - 문의요약: 법인 카드 결제 문제  - 문의유형: 결제 관련  - impact: L1  - 처리내용: 카드 결제가 되지 않음, 한도 심사 완료  - 결과: 담당자 안내 후 문제 &rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-slate-400">3</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">공동인증서/등록/연동</p>
+            <p class="text-[10px] text-slate-600">카드/공동인증서/등록/연동</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">11</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-slate-400 rounded-full" style="width:34%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;공동인증서 정상 연동되어있는데, 문자로 공동인증서 상태가 만료, 정상등록되지 않았다고 왔습니다.&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-slate-400">4</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">멤버관리/정보변경</p>
+            <p class="text-[10px] text-slate-600">지출관리/멤버관리/정보변경</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">10</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-slate-400 rounded-full" style="width:31%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;-----Original Message-----  From: &quot;고위드 신현덕 매니저&quot;&lt;team@gowid.mail.channel.io&gt;  To: &quot;주식회사 트위넬&quot;&lt&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;[상담요약]  - 고객사: 고위드  - 문의요약: 멤버 정보 변경 요청  - 문의유형: 정보 수정  - impact: L2  - 처리내용: 회원가입 미완료 확인  - 결과: 정보 수정 불가  - 후속조치: 회원가입 &rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-slate-400">5</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">발급/신규발급</p>
+            <p class="text-[10px] text-slate-600">카드/발급/신규발급</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">6</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-slate-400 rounded-full" style="width:19%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;처음 한도를 받았습니다. 1) 이 한도가 여러 카드의 합인지, 카드별 한도인지요? 2) 한도 유효기간이 뭔가요? 이 기간 이후에 카드를 신청하려면 또 한도를 받아야 하는 건가요? 3) 임직원 명의 카드를 발급하려면,&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-slate-400">6</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">미분류</p>
+            <p class="text-[10px] text-slate-600">미분류</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">5</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-slate-400 rounded-full" style="width:16%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;확인했습니다. 해당 계약 유지하고 1월에 이전하는 방향으로 논의하겠습니다.     감사합니다.&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-slate-400">7</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">한도/보증금</p>
+            <p class="text-[10px] text-slate-600">카드/한도/보증금</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">4</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-slate-400 rounded-full" style="width:12%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;안녕하세요. 제가 신청한 법인카드는 그 때 보증금이 있어야 한다고 나왔는데.. 그 후에 연락이 없어서&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-slate-400">8</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">한도/상향신청</p>
+            <p class="text-[10px] text-slate-600">카드/한도/상향신청</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">4</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-slate-400 rounded-full" style="width:12%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;안녕하세요, 신현덕 매니저님  보살핌 배민혜입니다.    현재 저희 대표님께서 보살핌 카드 상향 신청을 하셨는데 유선으로 1억2천만원의 한도 상향시 현금 5억원을 유지해야한다는 안내를 받으셨다고합니다.    하여 해&rdquo;</p></div><div class="mt-1 pl-3 border-l-2 border-slate-700"><p class="text-[11px] text-slate-500 mb-0.5">상담원 응대</p><p class="text-xs text-slate-400 leading-relaxed">&ldquo;[상담요약]  - 고객사: 보살핌  - 문의요약: 카드 한도 상향 조건 확인  - 문의유형: 한도 상향  - impact: L2  - 처리내용: 현금 유지 조건 확인 요청  - 결과: 정보 제공 필요  - 후속조치:&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-slate-400">9</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">경비정책/설정</p>
+            <p class="text-[10px] text-slate-600">지출관리/경비정책/설정</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">4</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-slate-400 rounded-full" style="width:12%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;안녕하세요, 지출관리 탭이 개편된 이후 카드 사용 내역별로 불공제 처리하는 기능이 없어진 것 같아서 문의 드립니다. 혹시 방법이 있다면 전달 부탁 드려요!&rdquo;</p></div></td>
+        </tr>
+        <tr class="border-b border-slate-700/50 hover:bg-slate-700/20 transition">
+          <td class="px-4 py-3 text-center text-sm font-bold text-slate-400">10</td>
+          <td class="px-4 py-3">
+            <p class="text-sm font-medium text-white">GWS/리셀러이전</p>
+            <p class="text-[10px] text-slate-600">구독/GWS/리셀러이전</p>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="text-lg font-bold text-white">3</span>
+            <span class="text-xs text-slate-500">건</span>
+          </td>
+          <td class="px-4 py-3 w-32">
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-slate-400 rounded-full" style="width:9%"></div></div>
+          </td>
+          <td class="px-4 py-3"><div class="mt-2 pl-3 border-l-2 border-slate-600"><p class="text-[11px] text-slate-500 mb-0.5">고객 문의</p><p class="text-xs text-slate-300 leading-relaxed">&ldquo;매니저님,   계정 갯수 파악이 잘못되어서 확정하고 다시 리셀러 고위드로 진행하려고요.   사용하지 않는 계정을 파악 중입니다.     여러가지 다른 문의도 있어서 전화 한번 부탁드려도 될는지요? 0109362832&rdquo;</p></div></td>
+        </tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════ 제안 ═══════ -->
+    <section id="action" class="section print-break">
+      <h2 class="text-lg font-extrabold text-white mb-4">카드사 협업 제안</h2>
+
+      <div class="space-y-4">
+        <!-- 제안 1 -->
+        <div class="bg-slate-800 rounded-xl border border-teal-700/40 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-7 h-7 bg-teal-600 text-white rounded-lg flex items-center justify-center text-xs font-bold">1</span>
+            <h3 class="text-sm font-bold text-white">카드 발급/추가발급 프로세스 간소화</h3>
+            <span class="ml-auto px-2 py-0.5 bg-rose-500/20 text-rose-300 text-[10px] rounded font-semibold">A 3건 + B 4건</span>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">추가발급·재발급 시 카드사 홈페이지로 이동해야 하는 구간이 많아 고객 이탈과 이중 문의 발생. 고위드 내에서 원스톱 처리할 수 있는 <b>API 연동</b> 확대 요청.</p>
+        </div>
+
+        <!-- 제안 2 -->
+        <div class="bg-slate-800 rounded-xl border border-teal-700/40 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-7 h-7 bg-teal-600 text-white rounded-lg flex items-center justify-center text-xs font-bold">2</span>
+            <h3 class="text-sm font-bold text-white">한도 심사 진행상황 실시간 공유</h3>
+            <span class="ml-auto px-2 py-0.5 bg-amber-500/20 text-amber-300 text-[10px] rounded font-semibold">A 5건+</span>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">한도 상향/보증금/조회 관련 문의가 A유형 상위. 심사 진행 상태를 고위드가 조회할 수 있으면 고객에게 바로 안내 가능. <b>심사 상태 API</b> 또는 <b>웹훅</b> 요청.</p>
+        </div>
+
+        <!-- 제안 3 -->
+        <div class="bg-slate-800 rounded-xl border border-teal-700/40 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-7 h-7 bg-teal-600 text-white rounded-lg flex items-center justify-center text-xs font-bold">3</span>
+            <h3 class="text-sm font-bold text-white">카드 사용 등록/ARS 프로세스 개선</h3>
+            <span class="ml-auto px-2 py-0.5 bg-rose-500/20 text-rose-300 text-[10px] rounded font-semibold">B 다수</span>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">무기명 카드 사용등록을 위해 고객이 ARS(1599-8800)에 직접 전화해야 하는 구조. 법인 카드 일괄 사용등록 <b>배치 API</b> 또는 <b>고위드 대행 처리</b> 가능 여부 논의.</p>
+        </div>
+
+        <!-- 제안 4 -->
+        <div class="bg-slate-800 rounded-xl border border-teal-700/40 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-7 h-7 bg-teal-600 text-white rounded-lg flex items-center justify-center text-xs font-bold">4</span>
+            <h3 class="text-sm font-bold text-white">매입 내역 데이터 동기화 속도 개선</h3>
+            <span class="ml-auto px-2 py-0.5 bg-amber-500/20 text-amber-300 text-[10px] rounded font-semibold">A+B 혼합</span>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">결제 내역이 고위드에 반영되지 않아 고객이 카드사 홈페이지에서 직접 확인해야 하는 케이스. 롯데카드 최대 3시간 지연 → <b>실시간 또는 30분 내 동기화</b> 요청.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="text-center pt-6 pb-10 border-t border-slate-800">
+      <p class="text-xs text-slate-600">고위드 CX팀 · 분석 기간 2026.01.26 ~ 02.19 · 203건 기반</p>
+    </div>
+
+  </main>
+
+  <script>
+    new Chart(document.getElementById('summaryChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['A. 고위드 중계', 'B. 카드사 직접', 'C. 단순 문의'],
+        datasets: [{ data: [43, 24, 136], backgroundColor: ['#f59e0b','#f43f5e','#64748b'], borderWidth: 0 }]
+      },
+      options: {
+        cutout: '60%',
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + '건' } } }
+      }
+    });
+  </script>
+</body>
+</html>

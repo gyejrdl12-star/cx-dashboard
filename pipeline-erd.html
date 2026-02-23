@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CX 대시보드 데이터 파이프라인 ERD</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; background: #0f172a; }
+    .node { transition: transform .15s, box-shadow .15s; }
+    .node:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,.4); }
+    .arrow-line { stroke-dasharray: 6 4; animation: dash 1.5s linear infinite; }
+    @keyframes dash { to { stroke-dashoffset: -20; } }
+    .pulse { animation: pulse-glow 2s ease-in-out infinite; }
+    @keyframes pulse-glow { 0%,100% { opacity: .6; } 50% { opacity: 1; } }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+    .manual-badge { background: #fbbf24; color: #0f172a; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; }
+    .auto-badge { background: #34d399; color: #0f172a; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; }
+    .pain-badge { background: #f87171; color: #fff; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body class="min-h-screen p-6">
+
+  <!-- Header -->
+  <div class="max-w-6xl mx-auto mb-8">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center text-white text-lg font-bold">⚡</div>
+      <div>
+        <h1 class="text-2xl font-extrabold text-white">CX 대시보드 데이터 파이프라인</h1>
+        <p class="text-sm text-slate-400">매일 반복되는 데이터 업데이트 흐름 — 현황 분석 + 자동화 기회</p>
+      </div>
+    </div>
+    <div class="flex gap-4 mt-4 text-xs">
+      <div class="flex items-center gap-1.5"><span class="manual-badge">수동</span> 사람이 직접</div>
+      <div class="flex items-center gap-1.5"><span class="auto-badge">자동</span> 스크립트/AI</div>
+      <div class="flex items-center gap-1.5"><span class="pain-badge">병목</span> 시간 소요 큼</div>
+    </div>
+  </div>
+
+  <!-- Pipeline Flow -->
+  <div class="max-w-6xl mx-auto space-y-4">
+
+    <!-- ═══════════ STAGE 1: 데이터 수집 ═══════════ -->
+    <div class="bg-slate-800/60 rounded-2xl border border-slate-700 p-5">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="step-num bg-amber-500 text-slate-900">1</div>
+        <h2 class="text-base font-bold text-white">데이터 수집</h2>
+        <span class="manual-badge">수동</span>
+        <span class="pain-badge">병목</span>
+        <span class="text-xs text-slate-500 ml-auto">예상 5~10분</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- 채널톡 -->
+        <div class="node bg-slate-900 rounded-xl border border-amber-500/30 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center text-amber-400 text-sm">💬</div>
+            <div>
+              <p class="text-sm font-bold text-white">채널톡 Admin</p>
+              <p class="text-[10px] text-slate-500">desk.channel.io</p>
+            </div>
+          </div>
+          <div class="space-y-1.5 text-xs text-slate-400">
+            <p>1. 통계 → 대화 내보내기</p>
+            <p>2. 기간: 어제 ~ 오늘</p>
+            <p>3. Excel 다운로드</p>
+          </div>
+          <div class="mt-3 p-2 bg-slate-800 rounded-lg">
+            <p class="text-[10px] text-slate-500 font-mono">출력: _M_DD.xlsx (3시트)</p>
+            <div class="flex gap-1 mt-1 flex-wrap">
+              <span class="px-1.5 py-0.5 bg-slate-700 rounded text-[10px] text-slate-300">UserChat</span>
+              <span class="px-1.5 py-0.5 bg-slate-700 rounded text-[10px] text-slate-300">Message data</span>
+              <span class="px-1.5 py-0.5 bg-slate-700 rounded text-[10px] text-slate-300">User data</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div class="flex items-center justify-center">
+          <svg width="120" height="60" class="hidden md:block">
+            <defs><marker id="a1" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0, 10 3, 0 6" fill="#94a3b8"/></marker></defs>
+            <line x1="0" y1="30" x2="100" y2="30" stroke="#94a3b8" stroke-width="2" class="arrow-line" marker-end="url(#a1)"/>
+            <text x="50" y="18" text-anchor="middle" fill="#64748b" font-size="10">복사</text>
+          </svg>
+          <!-- Mobile arrow -->
+          <div class="md:hidden text-slate-500 text-2xl">↓</div>
+        </div>
+
+        <!-- 로컬 저장 -->
+        <div class="node bg-slate-900 rounded-xl border border-slate-600 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center text-slate-300 text-sm">📁</div>
+            <div>
+              <p class="text-sm font-bold text-white">로컬 저장소</p>
+              <p class="text-[10px] text-slate-500">cx-dashboard/data/</p>
+            </div>
+          </div>
+          <div class="p-2 bg-slate-800 rounded-lg text-xs font-mono text-slate-400">
+            <p>~/Downloads/_M_DD.xlsx</p>
+            <p class="text-slate-600">  ↓ cp</p>
+            <p>cx-dashboard/data/_M_DD.xlsx</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector -->
+    <div class="flex justify-center">
+      <svg width="40" height="30"><line x1="20" y1="0" x2="20" y2="25" stroke="#475569" stroke-width="2" class="arrow-line"/><polygon points="14,22 26,22 20,30" fill="#475569"/></svg>
+    </div>
+
+    <!-- ═══════════ STAGE 2: 전처리 ═══════════ -->
+    <div class="bg-slate-800/60 rounded-2xl border border-slate-700 p-5">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="step-num bg-blue-500 text-white">2</div>
+        <h2 class="text-base font-bold text-white">전처리 — Excel → JSON 변환</h2>
+        <span class="manual-badge">수동</span>
+        <span class="pain-badge">병목</span>
+        <span class="text-xs text-slate-500 ml-auto">예상 10~15분</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Excel 파싱 -->
+        <div class="node bg-slate-900 rounded-xl border border-blue-500/30 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center text-blue-400 text-sm">🔧</div>
+            <p class="text-sm font-bold text-white">Excel 파싱 + 필드 추출</p>
+          </div>
+          <div class="space-y-2">
+            <div class="p-2 bg-slate-800 rounded-lg">
+              <p class="text-[10px] text-slate-500 mb-1">UserChat 시트에서 추출</p>
+              <div class="grid grid-cols-2 gap-1 text-[10px] font-mono">
+                <span class="text-teal-400">chatId</span><span class="text-slate-500">← id (col 0)</span>
+                <span class="text-teal-400">date</span><span class="text-slate-500">← managedAt (col 1)</span>
+                <span class="text-teal-400">company</span><span class="text-slate-500">← 법인명 (col 2)</span>
+                <span class="text-teal-400">oldTag</span><span class="text-slate-500">← tags (col 8)</span>
+                <span class="text-teal-400">firstAnswerSec</span><span class="text-slate-500">← timeToFirstAnswer (col 66)</span>
+                <span class="text-teal-400">closeSec</span><span class="text-slate-500">← timeToClose (col 78)</span>
+              </div>
+            </div>
+            <div class="p-2 bg-slate-800 rounded-lg">
+              <p class="text-[10px] text-slate-500 mb-1">Message data에서 추출</p>
+              <div class="text-[10px] font-mono">
+                <span class="text-teal-400">firstMessage</span><span class="text-slate-500"> ← 첫 user 메시지 (재태깅 입력)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 중간 산출물 -->
+        <div class="node bg-slate-900 rounded-xl border border-slate-600 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center text-slate-300 text-sm">📋</div>
+            <p class="text-sm font-bold text-white">중간 JSON (레코드 배열)</p>
+          </div>
+          <div class="p-3 bg-slate-800 rounded-lg text-[11px] font-mono text-slate-400 leading-relaxed">
+            <span class="text-slate-600">[{</span><br>
+            &nbsp;&nbsp;<span class="text-teal-400">"chatId"</span>: <span class="text-amber-300">"6996f5..."</span>,<br>
+            &nbsp;&nbsp;<span class="text-teal-400">"date"</span>: <span class="text-amber-300">"2026-02-19"</span>,<br>
+            &nbsp;&nbsp;<span class="text-teal-400">"company"</span>: <span class="text-amber-300">"나우고"</span>,<br>
+            &nbsp;&nbsp;<span class="text-teal-400">"oldTag"</span>: <span class="text-amber-300">"미분류"</span>,<br>
+            &nbsp;&nbsp;<span class="text-teal-400">"firstMessage"</span>: <span class="text-amber-300">"카드 발급..."</span>,<br>
+            &nbsp;&nbsp;<span class="text-red-400">// primaryTag 없음</span><br>
+            &nbsp;&nbsp;<span class="text-red-400">// stabilityStatus 없음</span><br>
+            <span class="text-slate-600">}, ...]</span>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-2">⚠️ 아직 6개 필드가 비어있음</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector -->
+    <div class="flex justify-center">
+      <svg width="40" height="30"><line x1="20" y1="0" x2="20" y2="25" stroke="#475569" stroke-width="2" class="arrow-line"/><polygon points="14,22 26,22 20,30" fill="#475569"/></svg>
+    </div>
+
+    <!-- ═══════════ STAGE 3: AI 재태깅 ═══════════ -->
+    <div class="bg-slate-800/60 rounded-2xl border border-teal-700/40 p-5">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="step-num bg-teal-500 text-white">3</div>
+        <h2 class="text-base font-bold text-white">AI 재태깅</h2>
+        <span class="manual-badge">수동 (Claude에 요청)</span>
+        <span class="pain-badge">병목</span>
+        <span class="text-xs text-slate-500 ml-auto">예상 15~30분</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- 입력 -->
+        <div class="node bg-slate-900 rounded-xl border border-teal-500/30 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-teal-500/20 rounded-lg flex items-center justify-center text-teal-400 text-sm">🤖</div>
+            <p class="text-sm font-bold text-white">Claude Code 호출</p>
+          </div>
+          <div class="space-y-2 text-xs text-slate-400">
+            <p>각 상담의 <code class="bg-slate-800 px-1 rounded text-teal-300">firstMessage</code> + <code class="bg-slate-800 px-1 rounded text-teal-300">oldTag</code>를 입력으로</p>
+            <div class="p-2 bg-slate-800 rounded-lg">
+              <p class="text-[10px] text-slate-500 mb-1">마스터 태그 목록 (72개)</p>
+              <div class="flex flex-wrap gap-1">
+                <span class="px-1 py-0.5 bg-teal-900/50 rounded text-[9px] text-teal-300">카드/도입/가입/*</span>
+                <span class="px-1 py-0.5 bg-teal-900/50 rounded text-[9px] text-teal-300">카드/한도/*</span>
+                <span class="px-1 py-0.5 bg-teal-900/50 rounded text-[9px] text-teal-300">구독/GWS/*</span>
+                <span class="px-1 py-0.5 bg-teal-900/50 rounded text-[9px] text-teal-300">서비스/개선제안/*</span>
+                <span class="px-1 py-0.5 bg-slate-700 rounded text-[9px] text-slate-400">... +68개</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 처리 -->
+        <div class="node bg-slate-900 rounded-xl border border-purple-500/30 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 text-sm">⚙️</div>
+            <p class="text-sm font-bold text-white">분류 결과</p>
+          </div>
+          <div class="space-y-1.5 text-[11px] font-mono">
+            <div class="flex items-center gap-2">
+              <span class="text-purple-400 w-28">primaryTag</span>
+              <span class="text-slate-500">카드/도입/가입/회원가입</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-purple-400 w-28">secondaryTag</span>
+              <span class="text-slate-500">null | 보조태그</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-purple-400 w-28">confidence</span>
+              <span class="text-slate-500">high | medium | low</span>
+            </div>
+          </div>
+          <div class="mt-3 p-2 bg-purple-900/20 rounded-lg border border-purple-800/30">
+            <p class="text-[10px] text-purple-300">61개 고유 태그로 분류 중</p>
+            <p class="text-[10px] text-slate-500">대분류 7개: 카드, 구독, 서비스, 지출관리, 관리자, 경비, 회원</p>
+          </div>
+        </div>
+
+        <!-- 출력 -->
+        <div class="node bg-slate-900 rounded-xl border border-slate-600 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center text-slate-300 text-sm">📊</div>
+            <p class="text-sm font-bold text-white">재태깅 완료 JSON</p>
+          </div>
+          <div class="p-2 bg-slate-800 rounded-lg text-[11px] font-mono text-slate-400">
+            <span class="text-teal-400">"primaryTag"</span>: <span class="text-green-300">✅</span><br>
+            <span class="text-teal-400">"secondaryTag"</span>: <span class="text-green-300">✅</span><br>
+            <span class="text-teal-400">"confidence"</span>: <span class="text-green-300">✅</span><br>
+            <span class="text-red-400">"stabilityStatus"</span>: <span class="text-red-400">❌ 아직</span><br>
+            <span class="text-red-400">"growthStatus"</span>: <span class="text-red-400">❌ 아직</span><br>
+            <span class="text-red-400">"limitTier"</span>: <span class="text-red-400">❌ 아직</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector -->
+    <div class="flex justify-center">
+      <svg width="40" height="30"><line x1="20" y1="0" x2="20" y2="25" stroke="#475569" stroke-width="2" class="arrow-line"/><polygon points="14,22 26,22 20,30" fill="#475569"/></svg>
+    </div>
+
+    <!-- ═══════════ STAGE 4: 세그먼트 매칭 ═══════════ -->
+    <div class="bg-slate-800/60 rounded-2xl border border-slate-700 p-5">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="step-num bg-indigo-500 text-white">4</div>
+        <h2 class="text-base font-bold text-white">고객 세그먼트 매칭</h2>
+        <span class="manual-badge">수동</span>
+        <span class="text-xs text-slate-500 ml-auto">예상 10~20분</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- 세그먼트 소스 -->
+        <div class="node bg-slate-900 rounded-xl border border-indigo-500/30 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center text-indigo-400 text-sm">🗄️</div>
+            <p class="text-sm font-bold text-white">세그먼트 데이터 소스</p>
+          </div>
+          <div class="space-y-2">
+            <div class="p-2 bg-slate-800 rounded-lg text-[10px]">
+              <p class="text-indigo-300 font-semibold mb-1">BigQuery or 내부 DB</p>
+              <p class="text-slate-500">법인별 세그먼트 정보</p>
+            </div>
+            <div class="grid grid-cols-1 gap-1">
+              <div class="flex items-center gap-2 text-[10px]">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span class="text-slate-400">안정성: 안전/보통/위험/매우위험</span>
+              </div>
+              <div class="flex items-center gap-2 text-[10px]">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span class="text-slate-400">성장: 초성장/성장/유지/역성장/초역성장</span>
+              </div>
+              <div class="flex items-center gap-2 text-[10px]">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span class="text-slate-400">한도: 1천만미만~5억이상 (5구간)</span>
+              </div>
+              <div class="flex items-center gap-2 text-[10px]">
+                <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                <span class="text-slate-400">상세: 신규/지속사용/미사용/자의적이탈</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 매칭 로직 -->
+        <div class="node bg-slate-900 rounded-xl border border-slate-600 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center text-slate-300 text-sm">🔗</div>
+            <p class="text-sm font-bold text-white">JOIN 키</p>
+          </div>
+          <div class="p-3 bg-slate-800 rounded-lg text-xs font-mono">
+            <p class="text-slate-500">UserChat.사업자번호</p>
+            <p class="text-slate-600 text-center">↕ JOIN</p>
+            <p class="text-slate-500">세그먼트.사업자번호</p>
+          </div>
+          <div class="mt-3 p-2 bg-amber-900/20 rounded-lg border border-amber-800/30">
+            <p class="text-[10px] text-amber-300">⚠️ 매칭률 ~70% (293/420)</p>
+            <p class="text-[10px] text-slate-500">미매칭 = 비회원 or 사업자번호 불일치</p>
+          </div>
+        </div>
+
+        <!-- 최종 레코드 -->
+        <div class="node bg-slate-900 rounded-xl border border-green-500/30 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center text-green-400 text-sm">✅</div>
+            <p class="text-sm font-bold text-white">완성된 레코드</p>
+          </div>
+          <div class="p-2 bg-slate-800 rounded-lg text-[11px] font-mono text-slate-400">
+            <span class="text-teal-400">"chatId"</span>: <span class="text-green-300">✅</span><br>
+            <span class="text-teal-400">"date"</span>: <span class="text-green-300">✅</span><br>
+            <span class="text-teal-400">"company"</span>: <span class="text-green-300">✅</span><br>
+            <span class="text-teal-400">"primaryTag"</span>: <span class="text-green-300">✅</span><br>
+            <span class="text-teal-400">"stabilityStatus"</span>: <span class="text-green-300">✅</span><br>
+            <span class="text-teal-400">"growthStatus"</span>: <span class="text-green-300">✅</span><br>
+            <span class="text-teal-400">"limitTier"</span>: <span class="text-green-300">✅</span><br>
+            <span class="text-slate-600">... 13개 필드 모두 채워짐</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector -->
+    <div class="flex justify-center">
+      <svg width="40" height="30"><line x1="20" y1="0" x2="20" y2="25" stroke="#475569" stroke-width="2" class="arrow-line"/><polygon points="14,22 26,22 20,30" fill="#475569"/></svg>
+    </div>
+
+    <!-- ═══════════ STAGE 5: 대시보드 주입 ═══════════ -->
+    <div class="bg-slate-800/60 rounded-2xl border border-slate-700 p-5">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="step-num bg-rose-500 text-white">5</div>
+        <h2 class="text-base font-bold text-white">대시보드 주입 + 배포</h2>
+        <span class="manual-badge">수동</span>
+        <span class="text-xs text-slate-500 ml-auto">예상 5~10분</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- JSON → HTML -->
+        <div class="node bg-slate-900 rounded-xl border border-rose-500/30 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-rose-500/20 rounded-lg flex items-center justify-center text-rose-400 text-sm">💉</div>
+            <p class="text-sm font-bold text-white">ALL_RECORDS 교체</p>
+          </div>
+          <div class="p-2 bg-slate-800 rounded-lg text-[11px] font-mono text-slate-400">
+            <p class="text-slate-600">// index.html:315</p>
+            <p><span class="text-rose-400">const</span> ALL_RECORDS = [</p>
+            <p>&nbsp;&nbsp;<span class="text-slate-500">... 420+ records ...</span></p>
+            <p>];</p>
+          </div>
+          <div class="mt-2 p-2 bg-slate-800 rounded-lg text-[11px] font-mono text-slate-400">
+            <p class="text-slate-600">// cs-retag-dashboard.html:413</p>
+            <p><span class="text-rose-400">const</span> ALL_RECORDS = [</p>
+            <p>&nbsp;&nbsp;<span class="text-slate-500">... +summary 필드 포함 ...</span></p>
+            <p>];</p>
+          </div>
+        </div>
+
+        <!-- 2개 대시보드 -->
+        <div class="node bg-slate-900 rounded-xl border border-slate-600 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center text-slate-300 text-sm">📊</div>
+            <p class="text-sm font-bold text-white">대시보드 2개 동시 업데이트</p>
+          </div>
+          <div class="space-y-2">
+            <div class="p-2 bg-slate-800 rounded-lg flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+              <div>
+                <p class="text-[11px] text-white font-semibold">index.html</p>
+                <p class="text-[10px] text-slate-500">CX 대시보드 (메인)</p>
+                <p class="text-[10px] text-slate-600">13개 필드 × N건</p>
+              </div>
+            </div>
+            <div class="p-2 bg-slate-800 rounded-lg flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+              <div>
+                <p class="text-[11px] text-white font-semibold">cs-retag-dashboard.html</p>
+                <p class="text-[10px] text-slate-500">CS 재태깅 대시보드</p>
+                <p class="text-[10px] text-slate-600">14개 필드 × N건 (+summary)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Git Push -->
+        <div class="node bg-slate-900 rounded-xl border border-green-500/30 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center text-green-400 text-sm">🚀</div>
+            <p class="text-sm font-bold text-white">Git Push</p>
+          </div>
+          <div class="p-2 bg-slate-800 rounded-lg text-[11px] font-mono text-slate-400">
+            <p>git add *.html</p>
+            <p>git commit -m "data: 2/23"</p>
+            <p>git push</p>
+          </div>
+          <div class="mt-2 p-2 bg-green-900/20 rounded-lg border border-green-800/30">
+            <p class="text-[10px] text-green-300">GitHub Pages or 로컬 서빙</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ ERD: 데이터 모델 ═══════════ -->
+  <div class="max-w-6xl mx-auto mt-10 mb-6">
+    <h2 class="text-xl font-extrabold text-white mb-4">데이터 모델 (ERD)</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+      <!-- UserChat -->
+      <div class="bg-slate-800 rounded-xl border border-amber-500/40 p-4">
+        <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-700">
+          <span class="text-amber-400 text-sm">📋</span>
+          <p class="text-sm font-bold text-amber-300">UserChat</p>
+          <span class="text-[10px] text-slate-500 ml-auto">Excel 시트 1</span>
+        </div>
+        <div class="space-y-1 text-[11px] font-mono">
+          <p><span class="text-amber-400">PK</span> <span class="text-white">id</span> <span class="text-slate-600">string</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">managedAt</span> <span class="text-slate-600">datetime</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">법인명</span> <span class="text-slate-600">formula</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">사업자번호</span> <span class="text-slate-600">formula</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">name</span> <span class="text-slate-600">string</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">tags</span> <span class="text-slate-600">string</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">state</span> <span class="text-slate-600">string</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">timeToFirstAnswer</span> <span class="text-slate-600">number</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">timeToClose</span> <span class="text-slate-600">number</span></p>
+          <p class="text-slate-600">&nbsp;&nbsp;&nbsp;... +89 cols</p>
+        </div>
+      </div>
+
+      <!-- Message Data -->
+      <div class="bg-slate-800 rounded-xl border border-blue-500/40 p-4">
+        <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-700">
+          <span class="text-blue-400 text-sm">💬</span>
+          <p class="text-sm font-bold text-blue-300">Message data</p>
+          <span class="text-[10px] text-slate-500 ml-auto">Excel 시트 2</span>
+        </div>
+        <div class="space-y-1 text-[11px] font-mono">
+          <p><span class="text-blue-400">FK</span> <span class="text-white">chatId</span> <span class="text-slate-600">string</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">personType</span> <span class="text-slate-600">user|manager</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">personId</span> <span class="text-slate-600">string</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">createdAt</span> <span class="text-slate-600">datetime</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">plainText</span> <span class="text-slate-600">string</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">isPrivate</span> <span class="text-slate-600">bool</span></p>
+        </div>
+        <div class="mt-3 p-2 bg-slate-900 rounded text-[10px] text-slate-500">
+          N:1 → UserChat<br>
+          재태깅에 첫 user 메시지 사용
+        </div>
+      </div>
+
+      <!-- User Data -->
+      <div class="bg-slate-800 rounded-xl border border-purple-500/40 p-4">
+        <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-700">
+          <span class="text-purple-400 text-sm">👤</span>
+          <p class="text-sm font-bold text-purple-300">User data</p>
+          <span class="text-[10px] text-slate-500 ml-auto">Excel 시트 3</span>
+        </div>
+        <div class="space-y-1 text-[11px] font-mono">
+          <p><span class="text-purple-400">PK</span> <span class="text-white">id</span> <span class="text-slate-600">string</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">name</span> <span class="text-slate-600">string</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">profile.companyname</span> <span class="text-slate-600">string</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">profile.corp_number</span> <span class="text-slate-600">string</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">profile.email</span> <span class="text-slate-600">string</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">tags</span> <span class="text-slate-600">string</span></p>
+          <p class="text-slate-600">&nbsp;&nbsp;&nbsp;... +58 cols</p>
+        </div>
+        <div class="mt-3 p-2 bg-slate-900 rounded text-[10px] text-slate-500">
+          1:N → UserChat (via userId)
+        </div>
+      </div>
+
+      <!-- ALL_RECORDS (최종) -->
+      <div class="bg-slate-800 rounded-xl border border-teal-500/40 p-4">
+        <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-700">
+          <span class="text-teal-400 text-sm">⚡</span>
+          <p class="text-sm font-bold text-teal-300">ALL_RECORDS</p>
+          <span class="text-[10px] text-slate-500 ml-auto">대시보드 최종</span>
+        </div>
+        <div class="space-y-1 text-[11px] font-mono">
+          <p><span class="text-teal-400">PK</span> <span class="text-white">chatId</span> <span class="text-slate-600">← UserChat.id</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">date</span> <span class="text-slate-600">← managedAt</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">company</span> <span class="text-slate-600">← 법인명</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">oldTag</span> <span class="text-slate-600">← tags</span></p>
+          <p class="text-teal-300">&nbsp;&nbsp;&nbsp;primaryTag <span class="text-slate-600">← AI 생성</span></p>
+          <p class="text-teal-300">&nbsp;&nbsp;&nbsp;secondaryTag <span class="text-slate-600">← AI 생성</span></p>
+          <p class="text-teal-300">&nbsp;&nbsp;&nbsp;confidence <span class="text-slate-600">← AI 생성</span></p>
+          <p class="text-indigo-300">&nbsp;&nbsp;&nbsp;detailCategory <span class="text-slate-600">← 세그먼트</span></p>
+          <p class="text-indigo-300">&nbsp;&nbsp;&nbsp;stabilityStatus <span class="text-slate-600">← 세그먼트</span></p>
+          <p class="text-indigo-300">&nbsp;&nbsp;&nbsp;growthStatus <span class="text-slate-600">← 세그먼트</span></p>
+          <p class="text-indigo-300">&nbsp;&nbsp;&nbsp;limitTier <span class="text-slate-600">← 세그먼트</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">firstAnswerSec</span> <span class="text-slate-600">← timeToFirst...</span></p>
+          <p>&nbsp;&nbsp;&nbsp;<span class="text-slate-300">closeSec</span> <span class="text-slate-600">← timeToClose</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Relationships -->
+    <div class="mt-4 bg-slate-800/60 rounded-xl border border-slate-700 p-4">
+      <h3 class="text-sm font-bold text-slate-300 mb-3">관계도</h3>
+      <div class="flex flex-wrap gap-6 text-xs text-slate-400">
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-1 bg-amber-500/20 border border-amber-500/30 rounded text-amber-300 font-mono">UserChat</span>
+          <span>1 ← N</span>
+          <span class="px-2 py-1 bg-blue-500/20 border border-blue-500/30 rounded text-blue-300 font-mono">Message</span>
+          <span class="text-slate-600">(chatId)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-1 bg-amber-500/20 border border-amber-500/30 rounded text-amber-300 font-mono">UserChat</span>
+          <span>N → 1</span>
+          <span class="px-2 py-1 bg-purple-500/20 border border-purple-500/30 rounded text-purple-300 font-mono">User</span>
+          <span class="text-slate-600">(userId)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-1 bg-amber-500/20 border border-amber-500/30 rounded text-amber-300 font-mono">UserChat</span>
+          <span>→ 변환 →</span>
+          <span class="px-2 py-1 bg-teal-500/20 border border-teal-500/30 rounded text-teal-300 font-mono">ALL_RECORDS</span>
+          <span class="text-slate-600">(1:1)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 시간 분석 + 자동화 기회 ═══════════ -->
+  <div class="max-w-6xl mx-auto mt-10 mb-10">
+    <h2 class="text-xl font-extrabold text-white mb-4">일일 소요 시간 + 자동화 기회</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- 현재 소요 시간 -->
+      <div class="bg-slate-800 rounded-xl border border-slate-700 p-5">
+        <h3 class="text-sm font-bold text-rose-300 mb-4">현재 (수동)</h3>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-300">1. 채널톡 Excel 다운로드</span>
+              <span class="text-amber-400 font-semibold">~5분</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-500 rounded-full" style="width:11%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-300">2. Excel → JSON 전처리</span>
+              <span class="text-amber-400 font-semibold">~10분</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-500 rounded-full" style="width:22%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-300">3. AI 재태깅 (Claude)</span>
+              <span class="text-rose-400 font-semibold">~20분</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-rose-500 rounded-full" style="width:44%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-300">4. 세그먼트 매칭</span>
+              <span class="text-amber-400 font-semibold">~5분</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-500 rounded-full" style="width:11%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-300">5. HTML 주입 + Git Push</span>
+              <span class="text-amber-400 font-semibold">~5분</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-500 rounded-full" style="width:11%"></div></div>
+          </div>
+          <div class="pt-3 border-t border-slate-700 flex justify-between">
+            <span class="text-sm font-bold text-white">합계</span>
+            <span class="text-lg font-bold text-rose-400">~45분/일</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 자동화 후 -->
+      <div class="bg-slate-800 rounded-xl border border-teal-700/40 p-5">
+        <h3 class="text-sm font-bold text-teal-300 mb-4">자동화 후 (목표)</h3>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-300">1. 채널톡 Excel 다운로드</span>
+              <span class="text-amber-400 font-semibold">~5분 <span class="text-slate-600">(수동 유지)</span></span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-amber-500 rounded-full" style="width:50%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-300">2~5. 나머지 전체</span>
+              <span class="text-teal-400 font-semibold">~5분 <span class="text-slate-600">(1 커맨드)</span></span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full"><div class="h-2 bg-teal-500 rounded-full" style="width:50%"></div></div>
+          </div>
+          <div class="pt-3 border-t border-slate-700 flex justify-between">
+            <span class="text-sm font-bold text-white">합계</span>
+            <span class="text-lg font-bold text-teal-400">~10분/일</span>
+          </div>
+          <div class="p-3 bg-teal-900/20 rounded-lg border border-teal-800/30 mt-2">
+            <p class="text-xs text-teal-300 font-semibold mb-2">자동화 방법</p>
+            <div class="space-y-1.5 text-[11px] text-slate-400">
+              <p><span class="text-teal-400 font-mono">cx-daily-update</span> 스킬 생성</p>
+              <p>→ Excel 경로 넘기면 자동으로:</p>
+              <p>&nbsp;&nbsp;① openpyxl로 파싱</p>
+              <p>&nbsp;&nbsp;② Claude API로 재태깅 (batch)</p>
+              <p>&nbsp;&nbsp;③ BQ에서 세그먼트 JOIN</p>
+              <p>&nbsp;&nbsp;④ HTML에 ALL_RECORDS 교체</p>
+              <p>&nbsp;&nbsp;⑤ git commit + push</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 자동화 우선순위 -->
+    <div class="mt-6 bg-slate-800 rounded-xl border border-slate-700 p-5">
+      <h3 class="text-sm font-bold text-white mb-3">자동화 우선순위</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs">
+          <thead class="border-b border-slate-700">
+            <tr>
+              <th class="px-3 py-2 text-left text-slate-400 font-semibold">순위</th>
+              <th class="px-3 py-2 text-left text-slate-400 font-semibold">단계</th>
+              <th class="px-3 py-2 text-center text-slate-400 font-semibold">현재 시간</th>
+              <th class="px-3 py-2 text-center text-slate-400 font-semibold">자동화 후</th>
+              <th class="px-3 py-2 text-center text-slate-400 font-semibold">절감</th>
+              <th class="px-3 py-2 text-left text-slate-400 font-semibold">방법</th>
+              <th class="px-3 py-2 text-center text-slate-400 font-semibold">난이도</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-700">
+            <tr>
+              <td class="px-3 py-2 text-teal-400 font-bold">1</td>
+              <td class="px-3 py-2 text-white">Excel → JSON</td>
+              <td class="px-3 py-2 text-center text-slate-300">10분</td>
+              <td class="px-3 py-2 text-center text-teal-300">10초</td>
+              <td class="px-3 py-2 text-center text-green-400">-99%</td>
+              <td class="px-3 py-2 text-slate-400">Python 스크립트 (openpyxl)</td>
+              <td class="px-3 py-2 text-center"><span class="px-2 py-0.5 bg-green-900/50 text-green-300 rounded">쉬움</span></td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-teal-400 font-bold">2</td>
+              <td class="px-3 py-2 text-white">HTML 주입 + Push</td>
+              <td class="px-3 py-2 text-center text-slate-300">5분</td>
+              <td class="px-3 py-2 text-center text-teal-300">10초</td>
+              <td class="px-3 py-2 text-center text-green-400">-97%</td>
+              <td class="px-3 py-2 text-slate-400">Python으로 line 315 교체 + git push</td>
+              <td class="px-3 py-2 text-center"><span class="px-2 py-0.5 bg-green-900/50 text-green-300 rounded">쉬움</span></td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-teal-400 font-bold">3</td>
+              <td class="px-3 py-2 text-white">세그먼트 매칭</td>
+              <td class="px-3 py-2 text-center text-slate-300">5분</td>
+              <td class="px-3 py-2 text-center text-teal-300">30초</td>
+              <td class="px-3 py-2 text-center text-green-400">-90%</td>
+              <td class="px-3 py-2 text-slate-400">BQ 쿼리 or 로컬 CSV JOIN</td>
+              <td class="px-3 py-2 text-center"><span class="px-2 py-0.5 bg-amber-900/50 text-amber-300 rounded">보통</span></td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-teal-400 font-bold">4</td>
+              <td class="px-3 py-2 text-white">AI 재태깅</td>
+              <td class="px-3 py-2 text-center text-slate-300">20분</td>
+              <td class="px-3 py-2 text-center text-teal-300">3분</td>
+              <td class="px-3 py-2 text-center text-green-400">-85%</td>
+              <td class="px-3 py-2 text-slate-400">Claude API batch + 마스터태그 프롬프트</td>
+              <td class="px-3 py-2 text-center"><span class="px-2 py-0.5 bg-amber-900/50 text-amber-300 rounded">보통</span></td>
+            </tr>
+            <tr class="bg-slate-900/50">
+              <td class="px-3 py-2 text-slate-500">-</td>
+              <td class="px-3 py-2 text-white">채널톡 다운로드</td>
+              <td class="px-3 py-2 text-center text-slate-300">5분</td>
+              <td class="px-3 py-2 text-center text-slate-500">5분</td>
+              <td class="px-3 py-2 text-center text-slate-600">0%</td>
+              <td class="px-3 py-2 text-slate-500">채널톡 API 없으면 수동 유지</td>
+              <td class="px-3 py-2 text-center"><span class="px-2 py-0.5 bg-slate-700 text-slate-400 rounded">N/A</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="max-w-6xl mx-auto pb-8 text-center">
+    <p class="text-xs text-slate-600">Generated 2026-02-23 · cx-dashboard pipeline ERD</p>
+  </div>
+
+</body>
+</html>
