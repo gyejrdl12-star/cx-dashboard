@@ -1,32 +1,443 @@
 [
-  {"corp_id": 1958800664, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "초역성장", "grant_limit": "100000000"},
-  {"corp_id": 8068700694, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "초성장", "grant_limit": "50000000"},
-  {"corp_id": 4458802096, "detail_category": "지속 사용", "stability_status": "보통", "growth_status": "초성장", "grant_limit": "100000000"},
-  {"corp_id": 2548701382, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "초성장", "grant_limit": "50000000"},
-  {"corp_id": 5018701653, "detail_category": "지속 사용", "stability_status": "매우 위험", "growth_status": "초역성장", "grant_limit": "150000000"},
-  {"corp_id": 1198645571, "detail_category": "미사용", "stability_status": "안전", "growth_status": "역성장", "grant_limit": "5000000"},
-  {"corp_id": 2118810839, "detail_category": "신규", "stability_status": "매우 위험", "growth_status": "초성장", "grant_limit": "19000000"},
-  {"corp_id": 1918802340, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "초역성장", "grant_limit": "70000000"},
-  {"corp_id": 5928801296, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "역성장", "grant_limit": "100000000"},
-  {"corp_id": 4108132391, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "역성장", "grant_limit": "250000000"},
-  {"corp_id": 7728703404, "detail_category": "지속 사용", "stability_status": "위험", "growth_status": null, "grant_limit": "5000000"},
-  {"corp_id": 6398702302, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "역성장", "grant_limit": "30000000"},
-  {"corp_id": 2518103375, "detail_category": "지속 사용", "stability_status": "보통", "growth_status": "초성장", "grant_limit": "10000000"},
-  {"corp_id": 7018801906, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "역성장", "grant_limit": "80000000"},
-  {"corp_id": 8638101831, "detail_category": "지속 사용", "stability_status": "보통", "growth_status": "성장", "grant_limit": "50000000"},
-  {"corp_id": 6798803344, "detail_category": "지속 사용", "stability_status": "보통", "growth_status": "성장", "grant_limit": "100000000"},
-  {"corp_id": 4108195552, "detail_category": "지속 사용", "stability_status": "보통", "growth_status": "성장", "grant_limit": "10000000"},
-  {"corp_id": 8348600713, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "역성장", "grant_limit": "120000000"},
-  {"corp_id": 7748100852, "detail_category": "지속 사용", "stability_status": "매우 위험", "growth_status": "성장", "grant_limit": "4000000"},
-  {"corp_id": 8198601256, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "역성장", "grant_limit": "195500000"},
-  {"corp_id": 6898803545, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": null, "grant_limit": "200000000"},
-  {"corp_id": 1758602816, "detail_category": "지속 사용", "stability_status": "매우 위험", "growth_status": "초역성장", "grant_limit": "13000000"},
-  {"corp_id": 4278602060, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "초성장", "grant_limit": "70000000"},
-  {"corp_id": 2418103586, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": null, "grant_limit": "40000000"},
-  {"corp_id": 3268801855, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "초역성장", "grant_limit": "7000000"},
-  {"corp_id": 8798801529, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "역성장", "grant_limit": "360000000"},
-  {"corp_id": 4188801867, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "초역성장", "grant_limit": "100000000"},
-  {"corp_id": 5078801605, "detail_category": "지속 사용", "stability_status": "안전", "growth_status": "성장", "grant_limit": "10000000"},
-  {"corp_id": 6778802368, "detail_category": "자의적 이탈", "stability_status": "매우 위험", "growth_status": "초성장", "grant_limit": "1000000"},
-  {"corp_id": 5708103825, "detail_category": "미사용", "stability_status": "안전", "growth_status": "성장", "grant_limit": "5000000"}
+  {
+    "corp_id": 1958800664,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초역성장",
+    "grant_limit": "100000000"
+  },
+  {
+    "corp_id": 8068700694,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초성장",
+    "grant_limit": "50000000"
+  },
+  {
+    "corp_id": 4458802096,
+    "detail_category": "지속 사용",
+    "stability_status": "보통",
+    "growth_status": "초성장",
+    "grant_limit": "100000000"
+  },
+  {
+    "corp_id": 2548701382,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초성장",
+    "grant_limit": "50000000"
+  },
+  {
+    "corp_id": 5018701653,
+    "detail_category": "지속 사용",
+    "stability_status": "매우 위험",
+    "growth_status": "초역성장",
+    "grant_limit": "150000000"
+  },
+  {
+    "corp_id": 1198645571,
+    "detail_category": "미사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "5000000"
+  },
+  {
+    "corp_id": 2118810839,
+    "detail_category": "신규",
+    "stability_status": "매우 위험",
+    "growth_status": "초성장",
+    "grant_limit": "19000000"
+  },
+  {
+    "corp_id": 1918802340,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초역성장",
+    "grant_limit": "70000000"
+  },
+  {
+    "corp_id": 5928801296,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "100000000"
+  },
+  {
+    "corp_id": 4108132391,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "250000000"
+  },
+  {
+    "corp_id": 7728703404,
+    "detail_category": "지속 사용",
+    "stability_status": "위험",
+    "growth_status": null,
+    "grant_limit": "5000000"
+  },
+  {
+    "corp_id": 6398702302,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "30000000"
+  },
+  {
+    "corp_id": 2518103375,
+    "detail_category": "지속 사용",
+    "stability_status": "보통",
+    "growth_status": "초성장",
+    "grant_limit": "10000000"
+  },
+  {
+    "corp_id": 7018801906,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "80000000"
+  },
+  {
+    "corp_id": 8638101831,
+    "detail_category": "지속 사용",
+    "stability_status": "보통",
+    "growth_status": "성장",
+    "grant_limit": "50000000"
+  },
+  {
+    "corp_id": 6798803344,
+    "detail_category": "지속 사용",
+    "stability_status": "보통",
+    "growth_status": "성장",
+    "grant_limit": "100000000"
+  },
+  {
+    "corp_id": 4108195552,
+    "detail_category": "지속 사용",
+    "stability_status": "보통",
+    "growth_status": "성장",
+    "grant_limit": "10000000"
+  },
+  {
+    "corp_id": 8348600713,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "120000000"
+  },
+  {
+    "corp_id": 7748100852,
+    "detail_category": "지속 사용",
+    "stability_status": "매우 위험",
+    "growth_status": "성장",
+    "grant_limit": "4000000"
+  },
+  {
+    "corp_id": 8198601256,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "195500000"
+  },
+  {
+    "corp_id": 6898803545,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": null,
+    "grant_limit": "200000000"
+  },
+  {
+    "corp_id": 1758602816,
+    "detail_category": "지속 사용",
+    "stability_status": "매우 위험",
+    "growth_status": "초역성장",
+    "grant_limit": "13000000"
+  },
+  {
+    "corp_id": 4278602060,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초성장",
+    "grant_limit": "70000000"
+  },
+  {
+    "corp_id": 2418103586,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": null,
+    "grant_limit": "40000000"
+  },
+  {
+    "corp_id": 3268801855,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초역성장",
+    "grant_limit": "7000000"
+  },
+  {
+    "corp_id": 8798801529,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "360000000"
+  },
+  {
+    "corp_id": 4188801867,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초역성장",
+    "grant_limit": "100000000"
+  },
+  {
+    "corp_id": 5078801605,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "성장",
+    "grant_limit": "10000000"
+  },
+  {
+    "corp_id": 6778802368,
+    "detail_category": "자의적 이탈",
+    "stability_status": "매우 위험",
+    "growth_status": "초성장",
+    "grant_limit": "1000000"
+  },
+  {
+    "corp_id": 5708103825,
+    "detail_category": "미사용",
+    "stability_status": "안전",
+    "growth_status": "성장",
+    "grant_limit": "5000000"
+  },
+  {
+    "corp_id": 7478701899,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "150000000"
+  },
+  {
+    "corp_id": 2028167042,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초성장",
+    "grant_limit": "1500000000"
+  },
+  {
+    "corp_id": 2288701059,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "76000000"
+  },
+  {
+    "corp_id": 4878801427,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "성장",
+    "grant_limit": "242000000"
+  },
+  {
+    "corp_id": 3238702784,
+    "detail_category": "미사용",
+    "stability_status": "안전",
+    "growth_status": "성장",
+    "grant_limit": "10000000"
+  },
+  {
+    "corp_id": 3278602251,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "성장",
+    "grant_limit": "14000000"
+  },
+  {
+    "corp_id": 5048801834,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초역성장",
+    "grant_limit": "300000000"
+  },
+  {
+    "corp_id": 4068166742,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초성장",
+    "grant_limit": "100000000"
+  },
+  {
+    "corp_id": 3538702451,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초성장",
+    "grant_limit": "60000000"
+  },
+  {
+    "corp_id": 1578600367,
+    "detail_category": "지속 사용",
+    "stability_status": "위험",
+    "growth_status": "유지",
+    "grant_limit": "3000000"
+  },
+  {
+    "corp_id": 4988101637,
+    "detail_category": "지속 사용",
+    "stability_status": "매우 위험",
+    "growth_status": "초역성장",
+    "grant_limit": "130000000"
+  },
+  {
+    "corp_id": 4758100921,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "성장",
+    "grant_limit": "20000000"
+  },
+  {
+    "corp_id": 6238802380,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "성장",
+    "grant_limit": "100000000"
+  },
+  {
+    "corp_id": 2018633675,
+    "detail_category": "지속 사용",
+    "stability_status": "보통",
+    "growth_status": "성장",
+    "grant_limit": "550000000"
+  },
+  {
+    "corp_id": 7848701184,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "성장",
+    "grant_limit": "191000000"
+  },
+  {
+    "corp_id": 3828801869,
+    "detail_category": "지속 사용",
+    "stability_status": "매우 위험",
+    "growth_status": "초역성장",
+    "grant_limit": "810000000"
+  },
+  {
+    "corp_id": 1868802334,
+    "detail_category": "지속 사용",
+    "stability_status": "위험",
+    "growth_status": "성장",
+    "grant_limit": "278000000"
+  },
+  {
+    "corp_id": 4608101758,
+    "detail_category": "지속 사용",
+    "stability_status": "위험",
+    "growth_status": "초역성장",
+    "grant_limit": "300000000"
+  },
+  {
+    "corp_id": 1948701232,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "50000000"
+  },
+  {
+    "corp_id": 8658702013,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "성장",
+    "grant_limit": "161000000"
+  },
+  {
+    "corp_id": 7288102541,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초성장",
+    "grant_limit": "20000000"
+  },
+  {
+    "corp_id": 7378101527,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "성장",
+    "grant_limit": "38000000"
+  },
+  {
+    "corp_id": 8788801768,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "100000000"
+  },
+  {
+    "corp_id": 5208601394,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "10000000"
+  },
+  {
+    "corp_id": 1978801844,
+    "detail_category": "지속 사용",
+    "stability_status": "매우 위험",
+    "growth_status": "유지",
+    "grant_limit": "30000000"
+  },
+  {
+    "corp_id": 7328601885,
+    "detail_category": "지속 사용",
+    "stability_status": "보통",
+    "growth_status": "역성장",
+    "grant_limit": "50000000"
+  },
+  {
+    "corp_id": 3598800176,
+    "detail_category": "지속 사용",
+    "stability_status": "보통",
+    "growth_status": "유지",
+    "grant_limit": "59000000"
+  },
+  {
+    "corp_id": 6718601877,
+    "detail_category": "지속 사용",
+    "stability_status": "위험",
+    "growth_status": "역성장",
+    "grant_limit": "3000000"
+  },
+  {
+    "corp_id": 6278101609,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "역성장",
+    "grant_limit": "12000000"
+  },
+  {
+    "corp_id": 8138801285,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": null,
+    "grant_limit": "13000000"
+  },
+  {
+    "corp_id": 2178701122,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": null,
+    "grant_limit": "40000000"
+  },
+  {
+    "corp_id": 1158601358,
+    "detail_category": "지속 사용",
+    "stability_status": "매우 위험",
+    "growth_status": null,
+    "grant_limit": "15000000"
+  },
+  {
+    "corp_id": 5758102914,
+    "detail_category": "지속 사용",
+    "stability_status": "안전",
+    "growth_status": "초성장",
+    "grant_limit": "30000000"
+  }
 ]
