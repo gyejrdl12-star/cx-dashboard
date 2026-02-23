@@ -104,7 +104,7 @@ def parse_userchat(wb, user_map, existing_ids):
                 company = user_map[user_id].get("company")
 
         # 기존 태그
-        old_tag = ws.cell(r, 9).value or "미분류"
+        old_tag = ws.cell(r, 7).value or "미분류"  # col 7 (G) = tags
 
         # 응대 시간
         first_answer_sec = ws.cell(r, 67).value  # timeToFirstAnswer (col index 66, 1-based=67)
