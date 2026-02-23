@@ -22,7 +22,6 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(SCRIPT_DIR)
 NEW_RECORDS_JSON = os.path.join(ROOT_DIR, "data", "new_records.json")
 INDEX_HTML = os.path.join(ROOT_DIR, "index.html")
-RETAG_HTML = os.path.join(ROOT_DIR, "cs-retag-dashboard.html")
 
 # ── 한도 구간 매핑 ──
 def to_limit_tier(grant_limit):
@@ -283,27 +282,17 @@ def main():
         "firstAnswerSec", "closeSec",
     ]
 
-    # cs-retag-dashboard.html (14개 필드, +summary)
-    RETAG_FIELDS = INDEX_FIELDS + ["summary"]
-
     existing_index, _ = load_existing_records(INDEX_HTML)
     print(f"  index.html 기존: {len(existing_index)}건")
     all_index = existing_index + new_records
     inject_into_html(INDEX_HTML, all_index, INDEX_FIELDS)
     print(f"  index.html 업데이트: {len(all_index)}건")
 
-    if os.path.exists(RETAG_HTML):
-        existing_retag, _ = load_existing_records(RETAG_HTML)
-        print(f"  cs-retag 기존: {len(existing_retag)}건")
-        all_retag = existing_retag + new_records
-        inject_into_html(RETAG_HTML, all_retag, RETAG_FIELDS)
-        print(f"  cs-retag 업데이트: {len(all_retag)}건")
-
     # 날짜 업데이트 (헤더의 최종 업데이트 날짜)
     all_dates = [r.get("date") for r in all_index if r.get("date")]
     if all_dates:
         max_date = max(all_dates)
-        for html_path in [INDEX_HTML, RETAG_HTML]:
+        for html_path in [INDEX_HTML]:
             if os.path.exists(html_path):
                 with open(html_path, "r", encoding="utf-8") as f:
                     content = f.read()
@@ -324,8 +313,6 @@ def main():
     print(f"  ✅ 신규 {len(new_records)}건 추가 (총 {len(all_index)}건)")
     print(f"  ✅ 세그먼트 매칭: {matched}/{len(new_records)}건")
     print(f"  ✅ index.html 업데이트 완료")
-    if os.path.exists(RETAG_HTML):
-        print(f"  ✅ cs-retag-dashboard.html 업데이트 완료")
     print(f"\n  다음: git commit + push")
 
 
