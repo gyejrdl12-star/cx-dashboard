@@ -99,7 +99,7 @@ def parse_userchat(wb, user_map, existing_ids):
         if company and not isinstance(company, str):
             company = None  # formula object
         if not company:
-            user_id = ws.cell(r, 14).value
+            user_id = ws.cell(r, 12).value  # col 12 = userId
             if user_id and user_id in user_map:
                 company = user_map[user_id].get("company")
 

@@ -92,18 +92,13 @@ def build_corp_number_map(excel_path):
     # UserChat에서 chatId → userId 매핑
     ws_chat = wb["UserChat"]
     chat_to_user = {}
-    chat_to_corp_direct = {}
     for r in range(2, ws_chat.max_row + 1):
         chat_id = ws_chat.cell(r, 1).value
         if not chat_id:
             continue
-        user_id = ws_chat.cell(r, 14).value
+        user_id = ws_chat.cell(r, 12).value  # col 12 = userId
         if user_id:
-            chat_to_user[chat_id] = user_id
-        # data_only로 직접 읽히는 사업자번호도 시도
-        corp_direct = ws_chat.cell(r, 4).value
-        if corp_direct and isinstance(corp_direct, str):
-            chat_to_corp_direct[chat_id] = re.sub(r"[^0-9]", "", corp_direct)
+            chat_to_user[chat_id] = str(user_id).replace('.0', '')
 
     # User data에서 userId → corp_number 매핑
     ws_user = wb["User data"]
@@ -117,13 +112,9 @@ def build_corp_number_map(excel_path):
     # chatId → corp_number(숫자만) 최종 매핑
     result = {}
     for chat_id in chat_to_user:
-        # 직접 읽힌 사업자번호 우선
-        if chat_id in chat_to_corp_direct:
-            result[chat_id] = chat_to_corp_direct[chat_id]
-        else:
-            user_id = chat_to_user[chat_id]
-            if user_id in user_to_corp:
-                result[chat_id] = user_to_corp[user_id]
+        user_id = chat_to_user[chat_id]
+        if user_id in user_to_corp:
+            result[chat_id] = user_to_corp[user_id]
 
     return result
 
