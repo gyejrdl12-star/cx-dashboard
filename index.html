@@ -1013,22 +1013,28 @@
       const fmtD = d => d.toISOString().slice(5,10).replace('-','.');
       periodEl.textContent = `${fmtD(new Date(twS))} ~ ${fmtD(latestDate)}`;
 
+      // 미분류 = 봇처리 → VOC 요약에서 제외
+      const isBot = r => !r.primaryTag || r.primaryTag === '미분류';
+      const twHuman = thisWeek.filter(r => !isBot(r));
+      const lwHuman = lastWeek.filter(r => !isBot(r));
+      const twBotCnt = thisWeek.length - twHuman.length;
+
       const bullets = [];
       function med(arr) { if(!arr.length) return null; const s=arr.slice().sort((a,b)=>a-b); return s[Math.floor(s.length/2)]; }
       function shortTag(t) { const p = t.split('/'); return p.length > 2 ? p.slice(1).join('/') : t; }
 
-      // 1. 전체 건수 WoW 변화
-      if (lastWeek.length > 0) {
-        const pct = Math.round((thisWeek.length - lastWeek.length) / lastWeek.length * 100);
-        if (pct > 15) bullets.push({ icon: '🔺', text: `CS 문의가 전주 대비 <strong class="text-red-400">${pct}% 증가</strong> (${lastWeek.length}→${thisWeek.length}건) — 원인 파악 필요`, type: 'alert' });
-        else if (pct < -15) bullets.push({ icon: '🔽', text: `CS 문의가 전주 대비 <strong class="text-emerald-400">${Math.abs(pct)}% 감소</strong> (${lastWeek.length}→${thisWeek.length}건)`, type: 'good' });
-        else bullets.push({ icon: '📊', text: `CS 문의 ${thisWeek.length}건으로 전주(${lastWeek.length}건) 대비 유사한 수준`, type: 'neutral' });
+      // 1. 전체 건수 WoW 변화 (봇처리 제외)
+      if (lwHuman.length > 0) {
+        const pct = Math.round((twHuman.length - lwHuman.length) / lwHuman.length * 100);
+        if (pct > 15) bullets.push({ icon: '🔺', text: `CS 문의가 전주 대비 <strong class="text-red-400">${pct}% 증가</strong> (${lwHuman.length}→${twHuman.length}건, 봇처리 ${twBotCnt}건 제외) — 원인 파악 필요`, type: 'alert' });
+        else if (pct < -15) bullets.push({ icon: '🔽', text: `CS 문의가 전주 대비 <strong class="text-emerald-400">${Math.abs(pct)}% 감소</strong> (${lwHuman.length}→${twHuman.length}건, 봇처리 ${twBotCnt}건 제외)`, type: 'good' });
+        else bullets.push({ icon: '📊', text: `CS 문의 ${twHuman.length}건으로 전주(${lwHuman.length}건) 대비 유사한 수준 (봇처리 ${twBotCnt}건 제외)`, type: 'neutral' });
       }
 
-      // 2. 이번주 급증 태그 (전주 대비 +50% 이상 & 3건 이상)
+      // 2. 이번주 급증 태그 (전주 대비 +50% 이상 & 3건 이상, 봇처리 제외)
       const twTags = {}, lwTags = {};
-      thisWeek.forEach(r => { const t = (r.primaryTag||'').split('/')[0]; twTags[t] = (twTags[t]||0)+1; });
-      lastWeek.forEach(r => { const t = (r.primaryTag||'').split('/')[0]; lwTags[t] = (lwTags[t]||0)+1; });
+      twHuman.forEach(r => { const t = (r.primaryTag||'').split('/')[0]; twTags[t] = (twTags[t]||0)+1; });
+      lwHuman.forEach(r => { const t = (r.primaryTag||'').split('/')[0]; lwTags[t] = (lwTags[t]||0)+1; });
       const surges = Object.entries(twTags)
         .filter(([t,n]) => n >= 3 && t)
         .map(([t,n]) => ({ tag: t, tw: n, lw: lwTags[t]||0, pct: lwTags[t] ? Math.round((n - lwTags[t]) / lwTags[t] * 100) : 999 }))
@@ -1042,16 +1048,16 @@
         bullets.push({ icon: '⚡', text: `급증 카테고리: ${surgeText}`, type: 'alert' });
       }
 
-      // 3. 이번주 가장 많은 세부 태그 TOP 3
+      // 3. 이번주 가장 많은 세부 태그 TOP 3 (봇처리 제외)
       const twDetailTags = {};
-      thisWeek.forEach(r => { const t = r.primaryTag || '미분류'; twDetailTags[t] = (twDetailTags[t]||0)+1; });
+      twHuman.forEach(r => { const t = r.primaryTag; twDetailTags[t] = (twDetailTags[t]||0)+1; });
       const topDetail = Object.entries(twDetailTags).sort((a,b)=>b[1]-a[1]).slice(0,3);
       if (topDetail.length > 0) {
         bullets.push({ icon: '🏷️', text: `이번 주 TOP 문의: ${topDetail.map(([t,n])=>`${shortTag(t)} ${n}건`).join(', ')}`, type: 'neutral' });
       }
 
-      // 4. 이탈 위험 고객 비중
-      const matched = thisWeek.filter(r => r.stabilityStatus && r.stabilityStatus !== '미매칭');
+      // 4. 이탈 위험 고객 비중 (봇처리 제외)
+      const matched = twHuman.filter(r => r.stabilityStatus && r.stabilityStatus !== '미매칭');
       const danger = matched.filter(r => r.stabilityStatus === '매우 위험');
       if (matched.length > 0 && danger.length >= 2) {
         const dpct = (danger.length / matched.length * 100).toFixed(0);
@@ -1061,9 +1067,9 @@
         bullets.push({ icon: '🚨', text: `이탈 위험 고객 CS 비중 <strong class="text-red-400">${dpct}%</strong>(${danger.length}건) — 주로 ${dtopArr.join(', ')} 관련`, type: 'alert' });
       }
 
-      // 5. 처리시간 이상치
-      const twTtc = med(thisWeek.map(r=>r.closeSec).filter(v=>v>0));
-      const lwTtc = med(lastWeek.map(r=>r.closeSec).filter(v=>v>0));
+      // 5. 처리시간 이상치 (봇처리 제외)
+      const twTtc = med(twHuman.map(r=>r.closeSec).filter(v=>v>0));
+      const lwTtc = med(lwHuman.map(r=>r.closeSec).filter(v=>v>0));
       if (twTtc && lwTtc) {
         const gap = Math.round((twTtc - lwTtc) / 60);
         if (gap > 30) bullets.push({ icon: '⏱️', text: `처리시간 중앙값이 전주 대비 <strong class="text-red-400">+${gap}분 증가</strong> — 복잡 문의 증가 또는 리소스 부족 가능성`, type: 'alert' });
